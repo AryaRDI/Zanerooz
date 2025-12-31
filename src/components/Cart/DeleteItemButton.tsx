@@ -23,7 +23,9 @@ export function DeleteItemButton({ item }: { item: CartItem }) {
         disabled={!itemId || isLoading}
         onClick={(e: React.FormEvent<HTMLButtonElement>) => {
           e.preventDefault()
-          if (itemId) removeItem(itemId)
+          // `useCart().removeItem` is typed as `DefaultDocumentIDType` (number in this project),
+          // but cart item IDs are strings. Cast is type-only; runtime value remains a string.
+          if (itemId) removeItem(itemId as unknown as number)
         }}
         type="button"
       >

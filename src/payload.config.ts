@@ -40,7 +40,45 @@ export default buildConfig({
   collections: [Users, Pages, Categories, Media],
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      connectionString: (() => {
+        const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+
+        if (!connectionString) {
+          throw new Error(
+            [
+              'Missing Postgres connection string.',
+              'Set `POSTGRES_URL` (or `DATABASE_URL`) to a Postgres connection string.',
+              'If you are using Supabase locally, this must be the DB port (typically 54322), not the Supabase API port (54321).',
+            ].join(' '),
+          )
+        }
+
+        if (/^https?:\/\//i.test(connectionString)) {
+          throw new Error(
+            [
+              '`POSTGRES_URL` looks like an HTTP URL, but it must be a Postgres connection string.',
+              'If you are using Supabase locally, do NOT use `http://127.0.0.1:54321` (Supabase API).',
+              'Use the Postgres URL on port 54322, e.g. `postgresql://postgres:postgres@127.0.0.1:54322/postgres`.',
+            ].join(' '),
+          )
+        }
+
+        try {
+          const url = new URL(connectionString)
+          if (url.port === '54321' && /^(localhost|127\.0\.0\.1)$/i.test(url.hostname)) {
+            throw new Error(
+              [
+                '`POSTGRES_URL` is pointing at port 54321, which is the Supabase API port, not Postgres.',
+                'Use the Supabase local DB port (typically 54322), e.g. `postgresql://postgres:postgres@127.0.0.1:54322/postgres`.',
+              ].join(' '),
+            )
+          }
+        } catch {
+          // Ignore URL parse errors here—driver will surface a better error if malformed.
+        }
+
+        return connectionString
+      })(),
     },
   }),
   editor: lexicalEditor({

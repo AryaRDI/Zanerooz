@@ -50,9 +50,13 @@ export function EditItemQuantityButton({ type, item }: { item: CartItem; type: '
 
           if (item.id) {
             if (type === 'plus') {
-              incrementItem(item.id)
+              // `useCart().incrementItem` is typed as `DefaultDocumentIDType` (number in this project),
+              // but cart item IDs are strings. Cast is type-only; runtime value remains a string.
+              incrementItem(item.id as unknown as number)
             } else {
-              decrementItem(item.id)
+              // `useCart().decrementItem` is typed as `DefaultDocumentIDType` (number in this project),
+              // but cart item IDs are strings. Cast is type-only; runtime value remains a string.
+              decrementItem(item.id as unknown as number)
             }
           }
         }}
