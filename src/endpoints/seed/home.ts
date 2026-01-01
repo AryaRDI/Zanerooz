@@ -1,4 +1,4 @@
-import type { Category, Media } from '@/payload-types'
+import type { Media } from '@/payload-types'
 import { RequiredDataFromCollectionSlug } from 'payload'
 
 type ProductArgs = {
@@ -15,6 +15,7 @@ export const homePageData: (args: ProductArgs) => RequiredDataFromCollectionSlug
     _status: 'published',
     hero: {
       type: 'highImpact',
+      media: contentImage,
       links: [
         {
           link: {
