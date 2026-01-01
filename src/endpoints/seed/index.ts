@@ -1,19 +1,19 @@
-import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
+import type { CollectionSlug, File, GlobalSlug, Payload, PayloadRequest } from 'payload'
 
-import path from 'path'
 import fs from 'fs/promises'
+import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { Address, Transaction, VariantOption } from '@/payload-types'
 import { contactFormData } from './contact-form'
 import { contactPageData } from './contact-page'
-import { productHatData } from './product-hat'
-import { productTshirtData, productTshirtVariant } from './product-tshirt'
 import { homePageData } from './home'
 import { imageHatData } from './image-hat'
+import { imageHero1Data } from './image-hero-1'
 import { imageTshirtBlackData } from './image-tshirt-black'
 import { imageTshirtWhiteData } from './image-tshirt-white'
-import { imageHero1Data } from './image-hero-1'
-import { Address, Transaction, VariantOption } from '@/payload-types'
+import { productHatData } from './product-hat'
+import { productTshirtData, productTshirtVariant } from './product-tshirt'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -79,25 +79,31 @@ const baseAddressUKData: Transaction['billingAddress'] = {
 // i.e. running `yarn seed` locally instead of using the admin UI within an active app
 // The app is not running to revalidate the pages and so the API routes are not available
 // These error messages can be ignored: `Error hitting revalidate route for...`
-const readLocalImage = async (relativePath: string): Promise<File> => {
+const readLocalOrRemoteImage = async (relativePath: string, fallbackUrl: string): Promise<File> => {
   const absolutePath = path.resolve(dirname, relativePath)
-  const data = await fs.readFile(absolutePath)
-  const name = path.basename(relativePath)
-  const extension = path.extname(name).toLowerCase()
-  const mimetype =
-    extension === '.png'
-      ? 'image/png'
-      : extension === '.jpg' || extension === '.jpeg'
-        ? 'image/jpeg'
-        : extension === '.webp'
-          ? 'image/webp'
-          : 'application/octet-stream'
+  try {
+    const data = await fs.readFile(absolutePath)
+    const name = path.basename(relativePath)
+    const extension = path.extname(name).toLowerCase()
+    const mimetype =
+      extension === '.png'
+        ? 'image/png'
+        : extension === '.jpg' || extension === '.jpeg'
+          ? 'image/jpeg'
+          : extension === '.webp'
+            ? 'image/webp'
+            : 'application/octet-stream'
 
-  return {
-    data,
-    name,
-    size: data.length,
-    mimetype,
+    return {
+      data,
+      name,
+      size: data.length,
+      mimetype,
+    }
+  } catch (err: any) {
+    // In serverless (Vercel), local seed assets may not be packaged—fallback to remote
+    const remote = await fetchFileByURL(fallbackUrl)
+    return remote
   }
 }
 
@@ -165,9 +171,18 @@ export const seed = async ({
 
   const [imageHatBuffer, imageTshirtBlackBuffer, imageTshirtWhiteBuffer, heroBuffer] =
     await Promise.all([
-      readLocalImage('./hat-logo.png'),
-      readLocalImage('./tshirt-black.png'),
-      readLocalImage('./tshirt-white.png'),
+      readLocalOrRemoteImage(
+        './hat-logo.png',
+        'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/ecommerce/src/endpoints/seed/hat-logo.png',
+      ),
+      readLocalOrRemoteImage(
+        './tshirt-black.png',
+        'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/ecommerce/src/endpoints/seed/tshirt-black.png',
+      ),
+      readLocalOrRemoteImage(
+        './tshirt-white.png',
+        'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/ecommerce/src/endpoints/seed/tshirt-white.png',
+      ),
       // Keep the hero from the template repo (no local copy shipped)
       fetchFileByURL(
         'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/website/src/endpoints/seed/image-hero1.webp',
