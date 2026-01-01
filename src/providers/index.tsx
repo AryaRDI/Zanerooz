@@ -4,6 +4,7 @@ import { stripeAdapterClient } from '@payloadcms/plugin-ecommerce/payments/strip
 import React from 'react'
 
 import { HeaderThemeProvider } from './HeaderTheme'
+import { LocaleProvider } from './Locale'
 import { ThemeProvider } from './Theme'
 import { SonnerProvider } from '@/providers/Sonner'
 
@@ -11,8 +12,9 @@ export const Providers: React.FC<{
   children: React.ReactNode
 }> = ({ children }) => {
   return (
-    <ThemeProvider>
-      <AuthProvider>
+    <LocaleProvider>
+      <ThemeProvider>
+        <AuthProvider>
         <HeaderThemeProvider>
           <SonnerProvider />
           <EcommerceProvider
@@ -44,6 +46,7 @@ export const Providers: React.FC<{
           </EcommerceProvider>
         </HeaderThemeProvider>
       </AuthProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </LocaleProvider>
   )
 }

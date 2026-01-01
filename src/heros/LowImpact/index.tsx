@@ -16,10 +16,24 @@ type LowImpactHeroType =
 
 export const LowImpactHero: React.FC<LowImpactHeroType> = ({ children, richText }) => {
   return (
-    <div className="container mt-16">
-      <div className="max-w-[48rem]">
-        {children || (richText && <RichText data={richText} enableGutter={false} />)}
+    <section className="relative overflow-hidden">
+      <div className="absolute inset-0">
+        <div className="h-full w-full bg-gradient-to-l from-background via-cream/60 to-background" />
       </div>
-    </div>
+
+      <div className="relative z-10 section-padding">
+        <div className="container mx-auto">
+          <div
+            className="max-w-2xl"
+            style={{
+              textAlign: 'start', // respects document dir
+              marginInlineEnd: 'auto',
+            }}
+          >
+            {children || (richText && <RichText data={richText} enableGutter={false} />)}
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }

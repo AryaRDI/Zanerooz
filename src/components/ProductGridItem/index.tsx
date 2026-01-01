@@ -2,7 +2,6 @@ import type { Product, Variant } from '@/payload-types'
 
 import Link from 'next/link'
 import React from 'react'
-import clsx from 'clsx'
 import { Media } from '@/components/Media'
 import { Price } from '@/components/Price'
 
@@ -33,29 +32,36 @@ export const ProductGridItem: React.FC<Props> = ({ product }) => {
     gallery?.[0]?.image && typeof gallery[0]?.image !== 'string' ? gallery[0]?.image : false
 
   return (
-    <Link className="relative inline-block h-full w-full group" href={`/products/${product.slug}`}>
-      {image ? (
-        <Media
-          className={clsx(
-            'relative aspect-square object-cover border rounded-2xl p-8 bg-primary-foreground',
+    <Link className="group block" href={`/products/${product.slug}`}>
+      <div className="bg-background rounded-lg overflow-hidden shadow-card card-hover">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          {image ? (
+            <Media
+              fill
+              className="absolute inset-0"
+              imgClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              priority={false}
+              resource={image}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-muted" />
           )}
-          height={80}
-          imgClassName={clsx('h-full w-full object-cover rounded-2xl', {
-            'transition duration-300 ease-in-out group-hover:scale-102': true,
-          })}
-          resource={image}
-          width={80}
-        />
-      ) : null}
+          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300" />
+        </div>
 
-      <div className="font-mono text-primary/50 group-hover:text-primary/100 flex justify-between items-center mt-4">
-        <div>{title}</div>
-
-        {typeof price === 'number' && (
-          <div className="">
-            <Price amount={price} />
+        <div className="p-4">
+          <h3 className="font-semibold text-foreground mt-1 mb-2 line-clamp-1">{title}</h3>
+          <div className="flex items-center justify-between gap-2">
+            {typeof price === 'number' ? (
+              <span className="font-bold text-accent">
+                <Price amount={price} />
+              </span>
+            ) : (
+              <span className="text-sm text-muted-foreground">—</span>
+            )}
+            <span className="text-xs text-muted-foreground">مشاهده ←</span>
           </div>
-        )}
+        </div>
       </div>
     </Link>
   )

@@ -37,6 +37,21 @@ export default buildConfig({
     },
     user: Users.slug,
   },
+  localization: {
+    locales: [
+      {
+        label: 'English',
+        code: 'en',
+      },
+      {
+        label: 'فارسی',
+        code: 'fa',
+        rtl: true,
+      },
+    ],
+    defaultLocale: 'fa',
+    fallback: true,
+  },
   collections: [Users, Pages, Categories, Media],
   db: vercelPostgresAdapter({
     pool: {

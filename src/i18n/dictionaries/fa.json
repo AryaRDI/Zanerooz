@@ -1,0 +1,151 @@
+{
+  "common": {
+    "loading": "در حال بارگذاری...",
+    "error": "خطایی رخ داد",
+    "success": "موفقیت",
+    "cancel": "لغو",
+    "save": "ذخیره",
+    "delete": "حذف",
+    "edit": "ویرایش",
+    "close": "بستن",
+    "back": "بازگشت",
+    "next": "بعدی",
+    "previous": "قبلی",
+    "search": "جستجو",
+    "openMenu": "باز کردن منو",
+    "noResults": "نتیجه‌ای یافت نشد",
+    "viewAll": "مشاهده همه",
+    "or": "یا",
+    "select": "انتخاب",
+    "remove": "حذف",
+    "tryAgain": "تلاش مجدد"
+  },
+  "navigation": {
+    "home": "خانه",
+    "shop": "فروشگاه",
+    "products": "محصولات",
+    "categories": "دسته‌بندی‌ها",
+    "cart": "سبد خرید",
+    "account": "حساب کاربری",
+    "orders": "سفارشات",
+    "login": "ورود",
+    "logout": "خروج",
+    "createAccount": "ایجاد حساب کاربری"
+  },
+  "product": {
+    "addToCart": "افزودن به سبد خرید",
+    "outOfStock": "ناموجود",
+    "inStock": "موجود",
+    "quantity": "تعداد",
+    "price": "قیمت",
+    "description": "توضیحات",
+    "relatedProducts": "محصولات مرتبط",
+    "selectVariant": "انتخاب نوع"
+  },
+  "cart": {
+    "title": "سبد خرید",
+    "description": "سبد خرید خود را مدیریت کنید.",
+    "empty": "سبد خرید شما خالی است",
+    "subtotal": "جمع جزء",
+    "total": "جمع کل",
+    "checkout": "تسویه حساب",
+    "continueShopping": "ادامه خرید",
+    "remove": "حذف",
+    "updateQuantity": "بروزرسانی تعداد"
+  },
+  "checkout": {
+    "title": "تسویه حساب",
+    "contact": "اطلاعات تماس",
+    "address": "آدرس",
+    "shippingAddress": "آدرس ارسال",
+    "billingAddress": "آدرس صورتحساب",
+    "paymentMethod": "روش پرداخت",
+    "orderSummary": "خلاصه سفارش",
+    "placeOrder": "ثبت سفارش",
+    "processing": "در حال پردازش...",
+    "guestEmail": "برای خرید به عنوان مهمان، ایمیل خود را وارد کنید.",
+    "continueAsGuest": "ادامه به عنوان مهمان",
+    "shippingSameAsBilling": "آدرس ارسال همان آدرس صورتحساب است",
+    "selectShippingAddress": "لطفاً آدرس ارسال را انتخاب کنید.",
+    "goToPayment": "رفتن به پرداخت",
+    "paymentInitError": "خطا در شروع پرداخت.",
+    "outOfStockError": "یک یا چند کالا در سبد خرید ناموجود است.",
+    "addressesHeading": "آدرس‌ها",
+    "addressesDescription": "لطفاً آدرس‌های خود را انتخاب یا اضافه کنید.",
+    "noAddresses": "هیچ آدرسی یافت نشد. لطفاً یک آدرس اضافه کنید.",
+    "selectAddress": "انتخاب آدرس",
+    "orderConfirmed": "سفارش تأیید شد",
+    "thankYou": "از خرید شما متشکریم!"
+  },
+  "account": {
+    "title": "حساب کاربری من",
+    "manageAccount": "مدیریت حساب کاربری",
+    "profile": "پروفایل",
+    "orderHistory": "تاریخچه سفارشات",
+    "addresses": "آدرس‌ها",
+    "settings": "تنظیمات",
+    "noOrders": "هنوز سفارشی ثبت نشده است"
+  },
+  "auth": {
+    "email": "ایمیل",
+    "password": "رمز عبور",
+    "confirmPassword": "تأیید رمز عبور",
+    "name": "نام",
+    "loginTitle": "ورود به حساب کاربری",
+    "registerTitle": "ایجاد حساب کاربری",
+    "forgotPassword": "رمز عبور را فراموش کرده‌اید؟",
+    "notYou": "شما نیستید؟",
+    "resetPassword": "بازنشانی رمز عبور",
+    "alreadyHaveAccount": "قبلاً حساب کاربری دارید؟",
+    "dontHaveAccount": "حساب کاربری ندارید؟"
+  },
+  "footer": {
+    "groups": {
+      "links": "لینک‌ها"
+    },
+    "social": {
+      "instagram": "اینستاگرام",
+      "twitter": "توییتر",
+      "whatsapp": "واتساپ"
+    },
+    "allRightsReserved": "تمامی حقوق محفوظ است",
+    "designedIn": "طراحی شده در میشیگان",
+    "craftedBy": "ساخته شده توسط Payload"
+  },
+  "home": {
+    "hero": {
+      "season": "کالکشن بهار ۱۴۰۴",
+      "primaryCta": "مشاهده محصولات جدید",
+      "secondaryCta": "برندها"
+    },
+    "sections": {
+      "brandsTitle": "برندهای معتبر",
+      "brandsAccent": "منتخب",
+      "brandsSubtitle": "برندهایی که به صورت مستقیم تامین می‌کنیم تا اصالت کالا تضمین شود.",
+      "categoriesTitle": "خرید بر اساس دسته‌بندی",
+      "categoriesAccent": "شیک",
+      "categoriesSubtitle": "پوشاک زنانه و مردانه، اکسسوری و آیتم‌های ویژه را پیدا کنید.",
+      "featuredTitle": "محصولات ویژه",
+      "featuredAccent": "این هفته",
+      "featuredSubtitle": "جدیدترین و پرفروش‌ترین آیتم‌ها از نگاه تیم فشن.",
+      "featuresTitle": "چرا از ما خرید کنید",
+      "featuresAccent": "تجربه لوکس",
+      "featuresSubtitle": "خدمات اختصاصی، شفافیت در شرایط و پشتیبانی پاسخ‌گو.",
+      "newsletterTitle": "عضو حلقه ویژه شوید",
+      "newsletterSubtitle": "اولین نفری باشید که از دراپ‌ها، مقالات و فروش‌های خصوصی باخبر می‌شود.",
+      "shopAll": "مشاهده همه محصولات"
+    },
+    "features": {
+      "authentic": "تضمین اصالت کالا",
+      "authenticDesc": "همه محصولات از تامین‌کنندگان معتبر و برندها تهیه می‌شوند.",
+      "shipping": "ارسال اکسپرس",
+      "shippingDesc": "تحویل سریع در سراسر کشور با بسته‌بندی ویژه و کد رهگیری.",
+      "styling": "استایلینگ شخصی",
+      "stylingDesc": "پیشنهادات استایلی و ست‌های اختصاصی از تیم فشن ما."
+    },
+    "newsletter": {
+      "cta": "اولین دسترسی به دراپ‌های جدید و پیشنهادهای اختصاصی را دریافت کنید.",
+      "button": "ایجاد حساب"
+    }
+  }
+}

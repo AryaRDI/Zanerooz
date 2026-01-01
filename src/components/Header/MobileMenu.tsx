@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useAuth } from '@/providers/Auth'
+import { useTranslation } from '@/i18n/useTranslation'
 import { MenuIcon } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
@@ -20,10 +21,12 @@ import React, { useEffect, useState } from 'react'
 
 interface Props {
   menu: Header['navItems']
+  brand?: Header['brand']
 }
 
-export function MobileMenu({ menu }: Props) {
+export function MobileMenu({ menu, brand }: Props) {
   const { user } = useAuth()
+  const { t } = useTranslation()
 
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -47,13 +50,19 @@ export function MobileMenu({ menu }: Props) {
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:bg-black dark:text-white">
-        <MenuIcon className="h-4" />
+      <SheetTrigger
+        className="p-2 hover:bg-muted rounded-full transition-colors"
+        aria-label={t('common.openMenu')}
+      >
+        <MenuIcon className="h-5 w-5 text-foreground" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="px-4">
+      <SheetContent side="right" className="px-4">
         <SheetHeader className="px-0 pt-4 pb-0">
-          <SheetTitle>My Store</SheetTitle>
+          <SheetTitle>
+            {brand?.name || 'مُد'}
+            <span className="text-gradient-gold">{brand?.highlight || 'استایل'}</span>
+          </SheetTitle>
 
           <SheetDescription />
         </SheetHeader>
@@ -63,7 +72,11 @@ export function MobileMenu({ menu }: Props) {
             <ul className="flex w-full flex-col">
               {menu.map((item) => (
                 <li className="py-2" key={item.id}>
-                  <CMSLink {...item.link} appearance="link" />
+                  <CMSLink
+                    {...item.link}
+                    appearance="inline"
+                    className="block py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  />
                 </li>
               ))}
             </ul>
@@ -72,35 +85,35 @@ export function MobileMenu({ menu }: Props) {
 
         {user ? (
           <div className="mt-4">
-            <h2 className="text-xl mb-4">My account</h2>
+            <h2 className="text-xl mb-4">{t('account.title')}</h2>
             <hr className="my-2" />
             <ul className="flex flex-col gap-2">
               <li>
-                <Link href="/orders">Orders</Link>
+                <Link href="/orders">{t('navigation.orders')}</Link>
               </li>
               <li>
-                <Link href="/account/addresses">Addresses</Link>
+                <Link href="/account/addresses">{t('account.addresses')}</Link>
               </li>
               <li>
-                <Link href="/account">Manage account</Link>
+                <Link href="/account">{t('account.manageAccount', 'Manage account')}</Link>
               </li>
               <li className="mt-6">
                 <Button asChild variant="outline">
-                  <Link href="/logout">Log out</Link>
+                  <Link href="/logout">{t('navigation.logout')}</Link>
                 </Button>
               </li>
             </ul>
           </div>
         ) : (
           <div>
-            <h2 className="text-xl mb-4">My account</h2>
+            <h2 className="text-xl mb-4">{t('account.title')}</h2>
             <div className="flex items-center gap-2 mt-4">
               <Button asChild className="w-full" variant="outline">
-                <Link href="/login">Log in</Link>
+                <Link href="/login">{t('navigation.login')}</Link>
               </Button>
-              <span>or</span>
+              <span>{t('common.or', 'or')}</span>
               <Button asChild className="w-full">
-                <Link href="/create-account">Create an account</Link>
+                <Link href="/create-account">{t('navigation.createAccount')}</Link>
               </Button>
             </div>
           </div>

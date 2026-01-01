@@ -1,0 +1,151 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "openMenu": "Open menu",
+    "noResults": "No results found",
+    "viewAll": "View all",
+    "or": "or",
+    "select": "Select",
+    "remove": "Remove",
+    "tryAgain": "Try again"
+  },
+  "navigation": {
+    "home": "Home",
+    "shop": "Shop",
+    "products": "Products",
+    "categories": "Categories",
+    "cart": "Cart",
+    "account": "Account",
+    "orders": "Orders",
+    "login": "Login",
+    "logout": "Logout",
+    "createAccount": "Create Account"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "quantity": "Quantity",
+    "price": "Price",
+    "description": "Description",
+    "relatedProducts": "Related Products",
+    "selectVariant": "Select variant"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "description": "Manage your cart here, add items to view the total.",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continueShopping": "Continue Shopping",
+    "remove": "Remove",
+    "updateQuantity": "Update quantity"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "contact": "Contact",
+    "address": "Address",
+    "shippingAddress": "Shipping Address",
+    "billingAddress": "Billing Address",
+    "paymentMethod": "Payment Method",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "guestEmail": "Enter your email to checkout as a guest.",
+    "continueAsGuest": "Continue as guest",
+    "shippingSameAsBilling": "Shipping is the same as billing",
+    "selectShippingAddress": "Please select a shipping address.",
+    "goToPayment": "Go to payment",
+    "paymentInitError": "An error occurred while initiating payment.",
+    "outOfStockError": "One or more items in your cart are out of stock.",
+    "addressesHeading": "Addresses",
+    "addressesDescription": "Please select or add your addresses.",
+    "noAddresses": "No addresses found. Please add an address.",
+    "selectAddress": "Select an address",
+    "orderConfirmed": "Order Confirmed",
+    "thankYou": "Thank you for your order!"
+  },
+  "account": {
+    "title": "My Account",
+    "manageAccount": "Manage account",
+    "profile": "Profile",
+    "orderHistory": "Order History",
+    "addresses": "Addresses",
+    "settings": "Settings",
+    "noOrders": "No orders yet"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "loginTitle": "Login to your account",
+    "registerTitle": "Create an account",
+    "forgotPassword": "Forgot password?",
+    "notYou": "Not you?",
+    "resetPassword": "Reset Password",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?"
+  },
+  "footer": {
+    "groups": {
+      "links": "Links"
+    },
+    "social": {
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "whatsapp": "WhatsApp"
+    },
+    "allRightsReserved": "All rights reserved",
+    "designedIn": "Designed in Michigan",
+    "craftedBy": "Crafted by Payload"
+  },
+  "home": {
+    "hero": {
+      "season": "Spring 2025 capsule",
+      "primaryCta": "Shop new arrivals",
+      "secondaryCta": "Explore brands"
+    },
+    "sections": {
+      "brandsTitle": "Trusted brands",
+      "brandsAccent": "curated",
+      "brandsSubtitle": "Labels we source directly to guarantee authenticity.",
+      "categoriesTitle": "Shop by category",
+      "categoriesAccent": "edits",
+      "categoriesSubtitle": "Find the perfect pieces across womenswear, menswear, and accessories.",
+      "featuredTitle": "Featured picks",
+      "featuredAccent": "this week",
+      "featuredSubtitle": "Fresh arrivals and best sellers selected by our editors.",
+      "featuresTitle": "Why shop with us",
+      "featuresAccent": "experience",
+      "featuresSubtitle": "Luxury service, transparent policies, and attentive support.",
+      "newsletterTitle": "Join the inner circle",
+      "newsletterSubtitle": "Get early access to drops, editorials, and private sales.",
+      "shopAll": "View all products"
+    },
+    "features": {
+      "authentic": "Guaranteed authentic",
+      "authenticDesc": "Every item is verified and sourced from trusted partners.",
+      "shipping": "Express delivery",
+      "shippingDesc": "Nationwide delivery with premium packaging and tracking.",
+      "styling": "Personal styling",
+      "stylingDesc": "Editorial looks and guidance from our fashion team."
+    },
+    "newsletter": {
+      "cta": "Get first access to new drops and private offers.",
+      "button": "Create an account"
+    }
+  }
+}

@@ -1,5 +1,9 @@
 import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
 
+import path from 'path'
+import fs from 'fs/promises'
+import { fileURLToPath } from 'url'
+
 import { contactFormData } from './contact-form'
 import { contactPageData } from './contact-page'
 import { productHatData } from './product-hat'
@@ -10,6 +14,9 @@ import { imageTshirtBlackData } from './image-tshirt-black'
 import { imageTshirtWhiteData } from './image-tshirt-white'
 import { imageHero1Data } from './image-hero-1'
 import { Address, Transaction, VariantOption } from '@/payload-types'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -72,6 +79,28 @@ const baseAddressUKData: Transaction['billingAddress'] = {
 // i.e. running `yarn seed` locally instead of using the admin UI within an active app
 // The app is not running to revalidate the pages and so the API routes are not available
 // These error messages can be ignored: `Error hitting revalidate route for...`
+const readLocalImage = async (relativePath: string): Promise<File> => {
+  const absolutePath = path.resolve(dirname, relativePath)
+  const data = await fs.readFile(absolutePath)
+  const name = path.basename(relativePath)
+  const extension = path.extname(name).toLowerCase()
+  const mimetype =
+    extension === '.png'
+      ? 'image/png'
+      : extension === '.jpg' || extension === '.jpeg'
+        ? 'image/jpeg'
+        : extension === '.webp'
+          ? 'image/webp'
+          : 'application/octet-stream'
+
+  return {
+    data,
+    name,
+    size: data.length,
+    mimetype,
+  }
+}
+
 export const seed = async ({
   payload,
   req,
@@ -89,18 +118,28 @@ export const seed = async ({
 
   // clear the database
   await Promise.all(
-    globals.map((global) =>
-      payload.updateGlobal({
+    globals.map((global) => {
+      const data =
+        global === 'footer'
+          ? {
+              navItems: [],
+              linkGroups: [],
+              socialLinks: [],
+              badges: [],
+            }
+          : {
+              navItems: [],
+            }
+
+      return payload.updateGlobal({
         slug: global,
-        data: {
-          navItems: [],
-        },
+        data,
         depth: 0,
         context: {
           disableRevalidate: true,
         },
-      }),
-    ),
+      })
+    }),
   )
 
   for (const collection of collections) {
@@ -126,15 +165,10 @@ export const seed = async ({
 
   const [imageHatBuffer, imageTshirtBlackBuffer, imageTshirtWhiteBuffer, heroBuffer] =
     await Promise.all([
-      fetchFileByURL(
-        'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/ecommerce/src/endpoints/seed/hat-logo.png',
-      ),
-      fetchFileByURL(
-        'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/ecommerce/src/endpoints/seed/tshirt-black.png',
-      ),
-      fetchFileByURL(
-        'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/ecommerce/src/endpoints/seed/tshirt-white.png',
-      ),
+      readLocalImage('./hat-logo.png'),
+      readLocalImage('./tshirt-black.png'),
+      readLocalImage('./tshirt-white.png'),
+      // Keep the hero from the template repo (no local copy shipped)
       fetchFileByURL(
         'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/main/templates/website/src/endpoints/seed/image-hero1.webp',
       ),
@@ -330,6 +364,121 @@ export const seed = async ({
       }),
     }),
   ])
+
+  payload.logger.info(`— Seeding header/footer globals...`)
+
+  await payload.updateGlobal({
+    slug: 'header',
+    data: {
+      brand: {
+        name: 'زَن',
+        highlight: 'روز',
+      },
+      navItems: [
+        {
+          link: {
+            type: 'custom',
+            url: '/',
+            label: 'خانه',
+          },
+        },
+        {
+          link: {
+            type: 'custom',
+            url: '/products',
+            label: 'فروشگاه',
+          },
+        },
+        {
+          link: {
+            type: 'custom',
+            url: '/contact',
+            label: 'تماس با ما',
+          },
+        },
+      ],
+    },
+    depth: 0,
+    context: { disableRevalidate: true },
+  })
+
+  await payload.updateGlobal({
+    slug: 'footer',
+    data: {
+      brand: {
+        name: 'زَن',
+        highlight: 'روز',
+        description: 'فروشگاه آنلاین پوشاک و اکسسوری با بهترین برندهای جهانی',
+      },
+      linkGroups: [
+        {
+          title: 'فروشگاه',
+          links: [
+            {
+              link: {
+                type: 'custom',
+                url: '/products',
+                label: 'مشاهده محصولات',
+              },
+            },
+            {
+              link: {
+                type: 'custom',
+                url: '/products?category=hats',
+                label: 'کلاه',
+              },
+            },
+            {
+              link: {
+                type: 'custom',
+                url: '/products?category=t-shirts',
+                label: 'تی‌شرت',
+              },
+            },
+          ],
+        },
+        {
+          title: 'شرکت',
+          links: [
+            {
+              link: {
+                type: 'custom',
+                url: '/contact',
+                label: 'تماس با ما',
+              },
+            },
+            {
+              link: {
+                type: 'custom',
+                url: '/account',
+                label: 'حساب کاربری',
+              },
+            },
+          ],
+        },
+      ],
+      socialLinks: [
+        { platform: 'instagram', url: 'https://instagram.com' },
+        { platform: 'twitter', url: 'https://x.com' },
+        { platform: 'whatsapp', url: 'https://wa.me/123456789' },
+      ],
+      badges: [
+        { label: 'برندهای اصل' },
+        { label: 'ارسال سریع' },
+      ],
+      navItems: [
+        {
+          link: {
+            type: 'custom',
+            url: '/products',
+            label: 'فروشگاه',
+          },
+        },
+      ],
+    },
+    depth: 0,
+    context: { disableRevalidate: true },
+  })
 
   payload.logger.info(`— Seeding addresses...`)
 

@@ -25,6 +25,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
   const linkResult: Field = {
     name: 'link',
     type: 'group',
+    label: {
+      en: 'Link',
+      fa: 'لینک',
+    },
     admin: {
       hideGutter: true,
     },
@@ -42,11 +46,11 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
             defaultValue: 'reference',
             options: [
               {
-                label: 'Internal link',
+                label: { en: 'Internal link', fa: 'لینک داخلی' },
                 value: 'reference',
               },
               {
-                label: 'Custom URL',
+                label: { en: 'Custom URL', fa: 'آدرس دلخواه' },
                 value: 'custom',
               },
             ],
@@ -60,7 +64,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
               },
               width: '50%',
             },
-            label: 'Open in new tab',
+            label: { en: 'Open in new tab', fa: 'باز کردن در تب جدید' },
           },
         ],
       },
@@ -74,7 +78,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
-      label: 'Document to link to',
+      label: { en: 'Document to link to', fa: 'انتخاب سند' },
       maxDepth: 1,
       relationTo: ['pages'],
       required: true,
@@ -85,7 +89,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'custom',
       },
-      label: 'Custom URL',
+      label: { en: 'Custom URL', fa: 'آدرس دلخواه' },
       required: true,
     },
   ]
@@ -106,10 +110,11 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         {
           name: 'label',
           type: 'text',
+          localized: true,
           admin: {
             width: '50%',
           },
-          label: 'Label',
+          label: { en: 'Label', fa: 'عنوان' },
           required: true,
         },
       ],
@@ -129,7 +134,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       name: 'appearance',
       type: 'select',
       admin: {
-        description: 'Choose how the link should be rendered.',
+        description: {
+          en: 'Choose how the link should be rendered.',
+          fa: 'نحوه نمایش لینک را انتخاب کنید.',
+        },
       },
       defaultValue: 'default',
       options: appearanceOptionsToUse,

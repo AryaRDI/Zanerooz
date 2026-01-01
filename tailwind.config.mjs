@@ -42,6 +42,11 @@ export default {
       },
     },
     extend: {
+      boxShadow: {
+        elegant: 'var(--shadow-elegant)',
+        card: 'var(--shadow-card)',
+        hover: 'var(--shadow-hover)',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -58,6 +63,12 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        gold: {
+          DEFAULT: 'hsl(var(--gold))',
+          light: 'hsl(var(--gold-light))',
+        },
+        cream: 'hsl(var(--cream))',
+        charcoal: 'hsl(var(--charcoal))',
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
@@ -104,6 +115,7 @@ export default {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        persian: ['var(--font-vazirmatn)', 'Tahoma', 'sans-serif'],
       },
       keyframes: {
         fadeIn: {

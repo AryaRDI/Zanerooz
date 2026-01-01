@@ -4,13 +4,22 @@ import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { ensureStartsWith } from '@/utilities/ensureStartsWith'
+import { getDirection } from '@/i18n/config'
 import { Providers } from '@/providers'
+import { InitLocale } from '@/providers/Locale/InitLocale'
 import { InitTheme } from '@/providers/Theme/InitTheme'
+import { getLocaleFromCookies } from '@/utilities/getGlobals'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Vazirmatn } from 'next/font/google'
 import React from 'react'
 import './globals.css'
+
+const vazirmatn = Vazirmatn({
+  subsets: ['arabic'],
+  variable: '--font-vazirmatn',
+  display: 'swap',
+})
 
 /* const { SITE_NAME, TWITTER_CREATOR, TWITTER_SITE } = process.env
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
@@ -40,13 +49,19 @@ const twitterSite = TWITTER_SITE ? ensureStartsWith(TWITTER_SITE, 'https://') : 
 } */
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  const locale = await getLocaleFromCookies()
+
   return (
     <html
-      className={[GeistSans.variable, GeistMono.variable].filter(Boolean).join(' ')}
-      lang="en"
+      className={[GeistSans.variable, GeistMono.variable, vazirmatn.variable]
+        .filter(Boolean)
+        .join(' ')}
+      lang={locale}
+      dir={getDirection(locale)}
       suppressHydrationWarning
     >
       <head>
+        <InitLocale />
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
@@ -57,7 +72,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <LivePreviewListener />
 
           <Header />
-          <main>{children}</main>
+          <main className="pt-4 md:pt-6">{children}</main>
           <Footer />
         </Providers>
       </body>

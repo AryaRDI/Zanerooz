@@ -31,6 +31,7 @@ export const ArchiveBlock: React.FC<
       collection: 'products',
       depth: 1,
       limit,
+      overrideAccess: false,
       ...(flattenedCategories && flattenedCategories.length > 0
         ? {
             where: {
@@ -54,13 +55,21 @@ export const ArchiveBlock: React.FC<
   }
 
   return (
-    <div className="my-16" id={`block-${id}`}>
+    <section className="section-padding bg-card" id={`block-${id}`}>
       {introContent && (
-        <div className="container mb-16">
-          <RichText className="ml-0 max-w-[48rem]" data={introContent} enableGutter={false} />
+        <div className="container mb-12">
+          <div
+            className="max-w-2xl"
+            style={{
+              textAlign: 'start', // logical start respects dir
+              marginInlineEnd: 'auto',
+            }}
+          >
+            <RichText data={introContent} enableGutter={false} />
+          </div>
         </div>
       )}
       <CollectionArchive posts={posts} />
-    </div>
+    </section>
   )
 }

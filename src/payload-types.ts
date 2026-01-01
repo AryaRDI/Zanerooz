@@ -127,7 +127,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'fa') | ('en' | 'fa')[];
   globals: {
     header: Header;
     footer: Footer;
@@ -136,7 +136,7 @@ export interface Config {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'fa';
   user: User & {
     collection: 'users';
   };
@@ -1788,6 +1788,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: number;
+  brand: {
+    name: string;
+    highlight: string;
+  };
   navItems?:
     | {
         link: {
@@ -1812,6 +1816,51 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  brand: {
+    name: string;
+    highlight: string;
+    description?: string | null;
+  };
+  linkGroups?:
+    | {
+        title: string;
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        platform: 'instagram' | 'twitter' | 'whatsapp';
+        /**
+         * Full URL including https://
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  badges?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Only used if “Link groups” is empty.
+   */
   navItems?:
     | {
         link: {
@@ -1835,6 +1884,12 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        name?: T;
+        highlight?: T;
+      };
   navItems?:
     | T
     | {
@@ -1858,6 +1913,46 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        name?: T;
+        highlight?: T;
+        description?: T;
+      };
+  linkGroups?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  badges?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
   navItems?:
     | T
     | {
