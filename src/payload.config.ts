@@ -10,6 +10,7 @@ import {
   UnorderedListFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -134,7 +135,26 @@ export default buildConfig({
   //email: nodemailerAdapter(),
   endpoints: [],
   globals: [Header, Footer],
-  plugins,
+  plugins: [
+    ...plugins,
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'media',
+        },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        forcePathStyle: true, // required for Supabase S3-compatible endpoints
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        region: process.env.S3_REGION || 'us-east-1',
+        endpoint: process.env.S3_ENDPOINT || '',
+      },
+    }),
+  ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
