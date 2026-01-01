@@ -3,7 +3,6 @@ import { getPayload } from 'payload'
 import clsx from 'clsx'
 import React, { Suspense } from 'react'
 
-import { FilterList } from './filter'
 import { CategoryItem } from './Categories.client'
 
 async function CategoryList() {
@@ -12,21 +11,19 @@ async function CategoryList() {
   const categories = await payload.find({
     collection: 'categories',
     sort: 'title',
+    limit: 100,
   })
 
   return (
-    <div>
-      <h3 className="text-xs mb-2 text-neutral-500 dark:text-neutral-400">Category</h3>
-
-      <ul>
-        {categories.docs.map((category) => {
-          return (
-            <li key={category.id}>
-              <CategoryItem category={category} />
-            </li>
-          )
-        })}
-      </ul>
+    <div className="space-y-2">
+      <CategoryItem category={{ id: 'all', title: 'همه' }} isAll />
+      {categories.docs.map((category) => {
+        return (
+          <div key={category.id}>
+            <CategoryItem category={category} />
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -39,12 +36,8 @@ export function Categories() {
   return (
     <Suspense
       fallback={
-        <div className="col-span-2 hidden h-[400px] w-full flex-none py-4 lg:block">
+        <div className="space-y-2">
           <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
           <div className={clsx(skeleton, items)} />
           <div className={clsx(skeleton, items)} />
           <div className={clsx(skeleton, items)} />

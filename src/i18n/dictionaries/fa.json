@@ -46,6 +46,7 @@
     "title": "سبد خرید",
     "description": "سبد خرید خود را مدیریت کنید.",
     "empty": "سبد خرید شما خالی است",
+    "yourCart": "سبد خرید شما",
     "subtotal": "جمع جزء",
     "total": "جمع کل",
     "checkout": "تسویه حساب",
@@ -75,7 +76,18 @@
     "noAddresses": "هیچ آدرسی یافت نشد. لطفاً یک آدرس اضافه کنید.",
     "selectAddress": "انتخاب آدرس",
     "orderConfirmed": "سفارش تأیید شد",
-    "thankYou": "از خرید شما متشکریم!"
+    "thankYou": "از خرید شما متشکریم!",
+    "noPaymentMethod": "روش پرداختی پیکربندی نشده است",
+    "completePayment": "تکمیل پرداخت",
+    "cancelPayment": "لغو پرداخت",
+    "zarinpal": {
+      "title": "زرین‌پال",
+      "description": "پرداخت امن با کارت‌های بانکی ایرانی"
+    },
+    "stripe": {
+      "title": "استرایپ",
+      "description": "کارت‌های اعتباری بین‌المللی"
+    }
   },
   "account": {
     "title": "حساب کاربری من",

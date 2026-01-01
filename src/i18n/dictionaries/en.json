@@ -46,6 +46,7 @@
     "title": "Shopping Cart",
     "description": "Manage your cart here, add items to view the total.",
     "empty": "Your cart is empty",
+    "yourCart": "Your cart",
     "subtotal": "Subtotal",
     "total": "Total",
     "checkout": "Checkout",
@@ -75,7 +76,18 @@
     "noAddresses": "No addresses found. Please add an address.",
     "selectAddress": "Select an address",
     "orderConfirmed": "Order Confirmed",
-    "thankYou": "Thank you for your order!"
+    "thankYou": "Thank you for your order!",
+    "noPaymentMethod": "No payment method configured",
+    "completePayment": "Complete Payment",
+    "cancelPayment": "Cancel payment",
+    "zarinpal": {
+      "title": "Zarinpal",
+      "description": "Secure payment with Iranian bank cards"
+    },
+    "stripe": {
+      "title": "Stripe",
+      "description": "International credit/debit cards"
+    }
   },
   "account": {
     "title": "My Account",

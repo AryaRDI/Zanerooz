@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, type ButtonProps } from '@/components/ui/button'
 import type { Product, Variant } from '@/payload-types'
 
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
@@ -10,9 +10,12 @@ import React, { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 type Props = {
   product: Product
+  className?: string
+  variant?: ButtonProps['variant']
+  children?: React.ReactNode
 }
 
-export function AddToCart({ product }: Props) {
+export function AddToCart({ product, className, variant = 'outline', children }: Props) {
   const { addItem, cart, isLoading } = useCart()
   const searchParams = useSearchParams()
 
@@ -97,15 +100,18 @@ export function AddToCart({ product }: Props) {
   return (
     <Button
       aria-label="Add to cart"
-      variant={'outline'}
-      className={clsx({
-        'hover:opacity-90': true,
-      })}
+      variant={variant}
+      className={clsx(
+        {
+          'hover:opacity-90': true,
+        },
+        className,
+      )}
       disabled={disabled || isLoading}
       onClick={addToCart}
       type="submit"
     >
-      Add To Cart
+      {children ?? 'Add To Cart'}
     </Button>
   )
 }

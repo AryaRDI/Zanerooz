@@ -3,10 +3,10 @@ import { EcommerceProvider } from '@payloadcms/plugin-ecommerce/client/react'
 import { stripeAdapterClient } from '@payloadcms/plugin-ecommerce/payments/stripe'
 import React from 'react'
 
+import { SonnerProvider } from '@/providers/Sonner'
 import { HeaderThemeProvider } from './HeaderTheme'
 import { LocaleProvider } from './Locale'
 import { ThemeProvider } from './Theme'
-import { SonnerProvider } from '@/providers/Sonner'
 
 export const Providers: React.FC<{
   children: React.ReactNode
@@ -35,6 +35,13 @@ export const Providers: React.FC<{
                   },
                 },
               },
+            }}
+            currenciesConfig={{
+              defaultCurrency: 'USD',
+              supportedCurrencies: [
+                { code: 'USD', decimals: 2, label: 'US Dollar', symbol: '$' },
+                { code: 'IRT', decimals: 0, label: 'Iranian Toman', symbol: 'تومان' },
+              ],
             }}
             paymentMethods={[
               stripeAdapterClient({

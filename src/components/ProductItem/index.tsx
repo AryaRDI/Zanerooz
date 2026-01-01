@@ -56,6 +56,7 @@ export const ProductItem: React.FC<Props> = ({
   }
 
   const itemPrice = variant?.priceInUSD || product.priceInUSD
+  const itemPriceIRT = variant?.priceInIRT || product.priceInIRT
   const itemURL = `/products/${product.slug}${variant ? `?variant=${variant.id}` : ''}`
 
   return (
@@ -94,6 +95,7 @@ export const ProductItem: React.FC<Props> = ({
             <Price
               className="font-mono text-primary/50 text-sm"
               amount={itemPrice * quantity}
+              amountIRT={itemPriceIRT ? itemPriceIRT * quantity : undefined}
               currencyCode={currencyCode}
             />
           </div>

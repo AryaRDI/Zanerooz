@@ -12,6 +12,8 @@ export const StockIndicator: React.FC<Props> = ({ product }) => {
 
   const variants = product.variants?.docs || []
 
+  const formatNumber = (value: number) => new Intl.NumberFormat('fa-IR').format(value)
+
   const selectedVariant = useMemo<Variant | undefined>(() => {
     if (product.enableVariants && variants.length) {
       const variantId = searchParams.get('variant')
@@ -44,9 +46,12 @@ export const StockIndicator: React.FC<Props> = ({ product }) => {
   }
 
   return (
-    <div className="uppercase font-mono text-sm font-medium text-gray-500">
-      {stockQuantity < 10 && stockQuantity > 0 && <p>Only {stockQuantity} left in stock</p>}
-      {(stockQuantity === 0 || !stockQuantity) && <p>Out of stock</p>}
+    <div className="text-sm font-medium text-muted-foreground">
+      {stockQuantity < 10 && stockQuantity > 0 && (
+        <p>تنها {formatNumber(stockQuantity)} عدد موجود است</p>
+      )}
+      {stockQuantity >= 10 && <p>موجود در انبار</p>}
+      {(stockQuantity === 0 || !stockQuantity) && <p>ناموجود</p>}
     </div>
   )
 }

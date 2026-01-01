@@ -5,14 +5,12 @@ import { GridTileImage } from '@/components/Grid/tile'
 import { Gallery } from '@/components/product/Gallery'
 import { ProductDescription } from '@/components/product/ProductDescription'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
 import React, { Suspense } from 'react'
-import { Button } from '@/components/ui/button'
-import { ChevronLeftIcon } from 'lucide-react'
-import { Metadata } from 'next'
 
 type Args = {
   params: Promise<{
@@ -117,35 +115,51 @@ export default async function ProductPage({ params }: Args) {
         }}
         type="application/ld+json"
       />
-      <div className="container pt-8 pb-8">
-        <Button asChild variant="ghost" className="mb-4">
-          <Link href="/shop">
-            <ChevronLeftIcon />
-            All products
-          </Link>
-        </Button>
-        <div className="flex flex-col gap-12 rounded-lg border p-8 md:py-12 lg:flex-row lg:gap-8 bg-primary-foreground">
-          <div className="h-full w-full basis-full lg:basis-1/2">
-            <Suspense
-              fallback={
-                <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
-              }
-            >
-              {Boolean(gallery?.length) && <Gallery gallery={gallery} />}
-            </Suspense>
-          </div>
-
-          <div className="basis-full lg:basis-1/2">
-            <ProductDescription product={product} />
+      <section className="bg-card py-6 border-b">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Link href="/" className="hover:text-foreground transition-colors">
+              صفحه اصلی
+            </Link>
+            <span>/</span>
+            <Link href="/shop" className="hover:text-foreground transition-colors">
+              محصولات
+            </Link>
+            <span>/</span>
+            <span className="text-foreground">{product.title}</span>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="section-padding pt-10">
+        <div className="container mx-auto">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
+            <div className="space-y-4">
+              <div className="rounded-lg overflow-hidden bg-muted shadow-card">
+                <Suspense
+                  fallback={
+                    <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
+                  }
+                >
+                  {Boolean(gallery?.length) && <Gallery gallery={gallery} />}
+                </Suspense>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <ProductDescription product={product} />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {product.layout?.length ? <RenderBlocks blocks={product.layout} /> : <></>}
 
       {relatedProducts.length ? (
-        <div className="container">
-          <RelatedProducts products={relatedProducts as Product[]} />
+        <div className="section-padding pt-0">
+          <div className="container">
+            <RelatedProducts products={relatedProducts as Product[]} />
+          </div>
         </div>
       ) : (
         <></>

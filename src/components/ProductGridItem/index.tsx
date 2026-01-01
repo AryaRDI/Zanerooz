@@ -1,30 +1,31 @@
-import type { Product, Variant } from '@/payload-types'
+import type { Product } from '@/payload-types'
 
-import Link from 'next/link'
-import React from 'react'
 import { Media } from '@/components/Media'
 import { Price } from '@/components/Price'
+import Link from 'next/link'
+import React from 'react'
 
 type Props = {
   product: Partial<Product>
 }
 
 export const ProductGridItem: React.FC<Props> = ({ product }) => {
-  const { gallery, priceInUSD, title } = product
+  const { gallery, priceInUSD, priceInIRT, title } = product
 
   let price = priceInUSD
+  let priceIRT = priceInIRT
 
   const variants = product.variants?.docs
 
   if (variants && variants.length > 0) {
     const variant = variants[0]
-    if (
-      variant &&
-      typeof variant === 'object' &&
-      variant?.priceInUSD &&
-      typeof variant.priceInUSD === 'number'
-    ) {
-      price = variant.priceInUSD
+    if (variant && typeof variant === 'object') {
+      if (variant?.priceInUSD && typeof variant.priceInUSD === 'number') {
+        price = variant.priceInUSD
+      }
+      if (variant?.priceInIRT && typeof variant.priceInIRT === 'number') {
+        priceIRT = variant.priceInIRT
+      }
     }
   }
 
@@ -52,9 +53,9 @@ export const ProductGridItem: React.FC<Props> = ({ product }) => {
         <div className="p-4">
           <h3 className="font-semibold text-foreground mt-1 mb-2 line-clamp-1">{title}</h3>
           <div className="flex items-center justify-between gap-2">
-            {typeof price === 'number' ? (
+            {typeof price === 'number' || typeof priceIRT === 'number' ? (
               <span className="font-bold text-accent">
-                <Price amount={price} />
+                <Price amount={price} amountIRT={priceIRT} />
               </span>
             ) : (
               <span className="text-sm text-muted-foreground">—</span>

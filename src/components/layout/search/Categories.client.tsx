@@ -3,25 +3,29 @@ import React, { useCallback, useMemo } from 'react'
 
 import { Category } from '@/payload-types'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
-import clsx from 'clsx'
+import { cn } from '@/utilities/cn'
 
 type Props = {
-  category: Category
+  category: Category | { id: string; title: string }
+  isAll?: boolean
 }
 
-export const CategoryItem: React.FC<Props> = ({ category }) => {
+export const CategoryItem: React.FC<Props> = ({ category, isAll = false }) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const isActive = useMemo(() => {
+    if (isAll) {
+      return !searchParams.get('category')
+    }
     return searchParams.get('category') === String(category.id)
-  }, [category.id, searchParams])
+  }, [category.id, searchParams, isAll])
 
   const setQuery = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
 
-    if (isActive) {
+    if (isAll || isActive) {
       params.delete('category')
     } else {
       params.set('category', String(category.id))
@@ -29,15 +33,18 @@ export const CategoryItem: React.FC<Props> = ({ category }) => {
 
     const newParams = params.toString()
 
-    router.push(pathname + '?' + newParams)
-  }, [category.id, isActive, pathname, router, searchParams])
+    router.push(pathname + (newParams ? '?' + newParams : ''))
+  }, [category.id, isActive, pathname, router, searchParams, isAll])
 
   return (
     <button
       onClick={() => setQuery()}
-      className={clsx('hover:cursor-pointer', {
-        ' underline': isActive,
-      })}
+      className={cn(
+        'block w-full text-right px-3 py-2 rounded-md transition-colors',
+        isActive
+          ? 'bg-accent text-accent-foreground'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+      )}
     >
       {category.title}
     </button>

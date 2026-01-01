@@ -2,12 +2,12 @@
 
 import { Price } from '@/components/Price'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
 } from '@/components/ui/sheet'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { ShoppingCart } from 'lucide-react'
@@ -16,12 +16,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/i18n/useTranslation'
+import { Product } from '@/payload-types'
 import { DeleteItemButton } from './DeleteItemButton'
 import { EditItemQuantityButton } from './EditItemQuantityButton'
 import { OpenCartButton } from './OpenCart'
-import { Button } from '@/components/ui/button'
-import { Product } from '@/payload-types'
-import { useTranslation } from '@/i18n/useTranslation'
 
 export function CartModal() {
   const { cart } = useCart()
@@ -83,11 +83,13 @@ export function CartModal() {
 
                   let image = firstGalleryImage || metaImage
                   let price = product.priceInUSD
+                  let priceIRT = product.priceInIRT
 
                   const isVariant = Boolean(variant) && typeof variant === 'object'
 
                   if (isVariant) {
                     price = variant?.priceInUSD
+                    priceIRT = variant?.priceInIRT
 
                     const imageVariant = product.gallery?.find((item) => {
                       if (!item.variantOption) return false
@@ -146,9 +148,10 @@ export function CartModal() {
                           </div>
                         </Link>
                         <div className="flex h-16 flex-col justify-between">
-                          {typeof price === 'number' && (
+                          {(typeof price === 'number' || typeof priceIRT === 'number') && (
                             <Price
                               amount={price}
+                              amountIRT={priceIRT}
                               className="flex justify-end space-y-2 text-right text-sm"
                             />
                           )}

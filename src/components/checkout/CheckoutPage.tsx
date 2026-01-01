@@ -14,21 +14,22 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
 
-import { cssVariables } from '@/cssVariables'
-import { CheckoutForm } from '@/components/forms/CheckoutForm'
-import { useAddresses, useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
-import { CheckoutAddresses } from '@/components/checkout/CheckoutAddresses'
-import { CreateAddressModal } from '@/components/addresses/CreateAddressModal'
-import { Address } from '@/payload-types'
-import { Checkbox } from '@/components/ui/checkbox'
 import { AddressItem } from '@/components/addresses/AddressItem'
+import { CreateAddressModal } from '@/components/addresses/CreateAddressModal'
+import { CheckoutAddresses } from '@/components/checkout/CheckoutAddresses'
+import { CheckoutForm } from '@/components/forms/CheckoutForm'
 import { FormItem } from '@/components/forms/FormItem'
-import { toast } from 'sonner'
+import { ZarinpalCheckoutForm } from '@/components/forms/ZarinpalCheckoutForm'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { Checkbox } from '@/components/ui/checkbox'
+import { cssVariables } from '@/cssVariables'
 import { useTranslation } from '@/i18n/useTranslation'
+import { Address } from '@/payload-types'
+import { useAddresses, useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
+import { toast } from 'sonner'
 
 const apiKey = `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
-const stripe = loadStripe(apiKey)
+const stripe = apiKey ? loadStripe(apiKey) : null
 
 export const CheckoutPage: React.FC = () => {
   const { user } = useAuth()
@@ -42,7 +43,10 @@ export const CheckoutPage: React.FC = () => {
    */
   const [email, setEmail] = useState('')
   const [emailEditable, setEmailEditable] = useState(true)
-  const [paymentData, setPaymentData] = useState<null | Record<string, unknown>>(null)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'stripe' | 'zarinpal'>('zarinpal')
+  // Separate state for active payment form and Stripe-specific data
+  const [activePaymentForm, setActivePaymentForm] = useState<'none' | 'zarinpal' | 'stripe'>('none')
+  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null)
   const { initiatePayment } = usePayments()
   const { addresses } = useAddresses()
   const [shippingAddress, setShippingAddress] = useState<Partial<Address>>()
@@ -78,42 +82,54 @@ export const CheckoutPage: React.FC = () => {
     }
   }, [])
 
-  const initiatePaymentIntent = useCallback(
-    async (paymentID: string) => {
-      try {
-        const paymentData = (await initiatePayment(paymentID, {
-          additionalData: {
-            ...(email ? { customerEmail: email } : {}),
-            billingAddress,
-            shippingAddress: billingAddressSameAsShipping ? billingAddress : shippingAddress,
-          },
-        })) as Record<string, unknown>
+  const initiateStripePayment = useCallback(async () => {
+    try {
+      const paymentData = (await initiatePayment('stripe', {
+        additionalData: {
+          ...(email ? { customerEmail: email } : {}),
+          billingAddress,
+          shippingAddress: billingAddressSameAsShipping ? billingAddress : shippingAddress,
+        },
+      })) as { clientSecret?: string }
 
-        if (paymentData) {
-          setPaymentData(paymentData)
-        }
-      } catch (error) {
-        const errorData = error instanceof Error ? JSON.parse(error.message) : {}
-        let errorMessage = t(
-          'checkout.paymentInitError',
-          'An error occurred while initiating payment.',
-        )
-
-        if (errorData?.cause?.code === 'OutOfStock') {
-          errorMessage = t(
-            'checkout.outOfStockError',
-            'One or more items in your cart are out of stock.',
-          )
-        }
-
-        setError(errorMessage)
-        toast.error(errorMessage)
+      if (paymentData?.clientSecret) {
+        setStripeClientSecret(paymentData.clientSecret)
+        setActivePaymentForm('stripe')
       }
-    },
-    [billingAddress, billingAddressSameAsShipping, shippingAddress],
-  )
+    } catch (error) {
+      const errorData = error instanceof Error ? JSON.parse(error.message) : {}
+      let errorMessage = t(
+        'checkout.paymentInitError',
+        'An error occurred while initiating payment.',
+      )
 
-  if (!stripe) return null
+      if (errorData?.cause?.code === 'OutOfStock') {
+        errorMessage = t(
+          'checkout.outOfStockError',
+          'One or more items in your cart are out of stock.',
+        )
+      }
+
+      setError(errorMessage)
+      toast.error(errorMessage)
+    }
+  }, [billingAddress, billingAddressSameAsShipping, shippingAddress, email, initiatePayment, t])
+
+  const cancelPayment = useCallback(() => {
+    setActivePaymentForm('none')
+    setStripeClientSecret(null)
+  }, [])
+
+  // Check if at least one payment method is configured
+  const hasPaymentMethod = Boolean(stripe || process.env.NEXT_PUBLIC_ZARINPAL_ENABLED === 'true')
+
+  if (!hasPaymentMethod) {
+    return (
+      <div className="prose dark:prose-invert py-12 w-full items-center">
+        <p>{t('checkout.noPaymentMethod', 'No payment method configured')}</p>
+      </div>
+    )
+  }
 
   if (cartIsEmpty && isProcessingPayment) {
     return (
@@ -205,7 +221,7 @@ export const CheckoutPage: React.FC = () => {
               actions={
                 <Button
                   variant={'outline'}
-                  disabled={Boolean(paymentData)}
+                  disabled={activePaymentForm !== 'none'}
                   onClick={(e) => {
                     e.preventDefault()
                     setBillingAddress(undefined)
@@ -233,7 +249,7 @@ export const CheckoutPage: React.FC = () => {
           <Checkbox
             id="shippingTheSameAsBilling"
             checked={billingAddressSameAsShipping}
-            disabled={Boolean(paymentData || (!user && (!email || Boolean(emailEditable))))}
+            disabled={activePaymentForm !== 'none' || (!user && (!email || emailEditable))}
             onCheckedChange={(state) => {
               setBillingAddressSameAsShipping(state as boolean)
             }}
@@ -251,13 +267,13 @@ export const CheckoutPage: React.FC = () => {
                   actions={
                     <Button
                       variant={'outline'}
-                      disabled={Boolean(paymentData)}
+                      disabled={activePaymentForm !== 'none'}
                       onClick={(e) => {
                         e.preventDefault()
                         setShippingAddress(undefined)
                       }}
                     >
-                      Remove
+                      {t('common.remove', 'Remove')}
                     </Button>
                   }
                   address={shippingAddress}
@@ -281,20 +297,85 @@ export const CheckoutPage: React.FC = () => {
           </>
         )}
 
-        {!paymentData && (
-          <Button
-            className="self-start"
-            disabled={!canGoToPayment}
-            onClick={(e) => {
-              e.preventDefault()
-              void initiatePaymentIntent('stripe')
-            }}
-          >
-            {t('checkout.goToPayment', 'Go to payment')}
-          </Button>
+        {activePaymentForm === 'none' && (
+          <>
+            <h2 className="font-medium text-3xl">{t('checkout.paymentMethod', 'Payment Method')}</h2>
+            
+            <div className="flex flex-col gap-4">
+              {/* Payment method selection */}
+              {process.env.NEXT_PUBLIC_ZARINPAL_ENABLED === 'true' && (
+                <div 
+                  className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                    selectedPaymentMethod === 'zarinpal' 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => setSelectedPaymentMethod('zarinpal')}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                      selectedPaymentMethod === 'zarinpal' ? 'border-primary' : 'border-border'
+                    }`}>
+                      {selectedPaymentMethod === 'zarinpal' && (
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{t('checkout.zarinpal.title', 'Zarinpal')}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t('checkout.zarinpal.description', 'Secure payment with Iranian bank cards')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {stripe && (
+                <div 
+                  className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                    selectedPaymentMethod === 'stripe' 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => setSelectedPaymentMethod('stripe')}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                      selectedPaymentMethod === 'stripe' ? 'border-primary' : 'border-border'
+                    }`}>
+                      {selectedPaymentMethod === 'stripe' && (
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{t('checkout.stripe.title', 'Stripe')}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t('checkout.stripe.description', 'International credit/debit cards')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Button
+              className="self-start"
+              disabled={!canGoToPayment}
+              onClick={(e) => {
+                e.preventDefault()
+                if (selectedPaymentMethod === 'stripe') {
+                  void initiateStripePayment()
+                } else {
+                  setActivePaymentForm('zarinpal')
+                }
+              }}
+            >
+              {t('checkout.goToPayment', 'Go to payment')}
+            </Button>
+          </>
         )}
 
-        {!paymentData?.['clientSecret'] && error && (
+        {error && activePaymentForm !== 'stripe' && (
           <div className="my-8">
             <Message error={error} />
 
@@ -310,12 +391,34 @@ export const CheckoutPage: React.FC = () => {
           </div>
         )}
 
-        <Suspense fallback={<React.Fragment />}>
-          {/* @ts-ignore */}
-          {paymentData && paymentData?.['clientSecret'] && (
+        {/* Zarinpal Payment Form */}
+        {activePaymentForm === 'zarinpal' && (
+          <div className="pb-16">
+            <h2 className="font-medium text-3xl mb-6">{t('checkout.completePayment', 'Complete Payment')}</h2>
+            <div className="flex flex-col gap-8">
+              <ZarinpalCheckoutForm
+                customerEmail={email || user?.email}
+                billingAddress={billingAddress}
+                cartTotal={cart.subtotal || 0}
+                setProcessingPayment={setProcessingPayment}
+              />
+              <Button
+                variant="ghost"
+                className="self-start"
+                onClick={cancelPayment}
+              >
+                {t('checkout.cancelPayment', 'Cancel payment')}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Stripe Payment Form */}
+        {activePaymentForm === 'stripe' && stripeClientSecret && stripe && (
+          <Suspense fallback={<React.Fragment />}>
             <div className="pb-16">
-              <h2 className="font-medium text-3xl">{t('checkout.paymentMethod')}</h2>
-              {error && <p>{`Error: ${error}`}</p>}
+              <h2 className="font-medium text-3xl">{t('checkout.completePayment', 'Complete Payment')}</h2>
+              {error && <p>{`${t('common.error', 'Error')}: ${error}`}</p>}
               <Elements
                 options={{
                   appearance: {
@@ -339,7 +442,7 @@ export const CheckoutPage: React.FC = () => {
                       spacingUnit: '4px',
                     },
                   },
-                  clientSecret: paymentData['clientSecret'] as string,
+                  clientSecret: stripeClientSecret,
                 }}
                 stripe={stripe}
               >
@@ -352,20 +455,20 @@ export const CheckoutPage: React.FC = () => {
                   <Button
                     variant="ghost"
                     className="self-start"
-                    onClick={() => setPaymentData(null)}
+                    onClick={cancelPayment}
                   >
-                    Cancel payment
+                    {t('checkout.cancelPayment', 'Cancel payment')}
                   </Button>
                 </div>
               </Elements>
             </div>
-          )}
-        </Suspense>
+          </Suspense>
+        )}
       </div>
 
       {!cartIsEmpty && (
         <div className="basis-full lg:basis-1/3 lg:pl-8 p-8 border-none bg-primary/5 flex flex-col gap-8 rounded-lg">
-          <h2 className="text-3xl font-medium">Your cart</h2>
+          <h2 className="text-3xl font-medium">{t('cart.yourCart', 'Your cart')}</h2>
           {cart?.items?.map((item, index) => {
             if (typeof item.product === 'object' && item.product) {
               const {
@@ -379,11 +482,13 @@ export const CheckoutPage: React.FC = () => {
 
               let image = gallery?.[0]?.image || meta?.image
               let price = product?.priceInUSD
+              let priceIRT = product?.priceInIRT
 
               const isVariant = Boolean(variant) && typeof variant === 'object'
 
               if (isVariant) {
                 price = variant?.priceInUSD
+                priceIRT = variant?.priceInIRT
 
                 const imageVariant = product.gallery?.find((item) => {
                   if (!item.variantOption) return false
@@ -433,7 +538,9 @@ export const CheckoutPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {typeof price === 'number' && <Price amount={price} />}
+                    {(typeof price === 'number' || typeof priceIRT === 'number') && (
+                      <Price amount={price} amountIRT={priceIRT} />
+                    )}
                   </div>
                 </div>
               )
@@ -442,7 +549,7 @@ export const CheckoutPage: React.FC = () => {
           })}
           <hr />
           <div className="flex justify-between items-center gap-2">
-            <span className="uppercase">Total</span>{' '}
+            <span className="uppercase">{t('cart.total', 'Total')}</span>{' '}
             <Price className="text-3xl font-medium" amount={cart.subtotal || 0} />
           </div>
         </div>

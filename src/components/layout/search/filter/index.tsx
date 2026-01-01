@@ -9,32 +9,28 @@ export type PathFilterItem = { path: string; title: string }
 
 function FilterItemList({ list }: { list: ListItem[] }) {
   return (
-    <React.Fragment>
+    <div className="space-y-2">
       {list.map((item: ListItem, i) => (
         <FilterItem item={item} key={i} />
       ))}
-    </React.Fragment>
+    </div>
   )
 }
 
 export function FilterList({ list, title }: { list: ListItem[]; title?: string }) {
   return (
-    <React.Fragment>
-      <nav>
-        {title ? (
-          <h3 className="text-xs mb-2 text-neutral-500 dark:text-neutral-400">{title}</h3>
-        ) : null}
-        <ul className="hidden md:block">
-          <Suspense fallback={null}>
-            <FilterItemList list={list} />
-          </Suspense>
-        </ul>
-        <ul className="md:hidden">
-          <Suspense fallback={null}>
-            <FilterItemDropdown list={list} />
-          </Suspense>
-        </ul>
-      </nav>
-    </React.Fragment>
+    <nav>
+      {title ? <h4 className="font-medium text-foreground mb-3">{title}</h4> : null}
+      <div className="hidden md:block">
+        <Suspense fallback={null}>
+          <FilterItemList list={list} />
+        </Suspense>
+      </div>
+      <div className="md:hidden">
+        <Suspense fallback={null}>
+          <FilterItemDropdown list={list} />
+        </Suspense>
+      </div>
+    </nav>
   )
 }
