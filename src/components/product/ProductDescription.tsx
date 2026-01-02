@@ -60,8 +60,12 @@ export function ProductDescription({ product }: { product: Product }) {
         highestAmountIRT = highestVariant.priceInIRT
       }
     }
-  } else if (product[priceField] && typeof product[priceField] === 'number') {
-    amount = product[priceField]
+  } else {
+    // Get USD price if available
+    if (product[priceField] && typeof product[priceField] === 'number') {
+      amount = product[priceField]
+    }
+    // Get IRT price if available
     if (typeof product.priceInIRT === 'number') {
       amountIRT = product.priceInIRT
     }

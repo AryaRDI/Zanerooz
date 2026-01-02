@@ -10,6 +10,7 @@ type Props = {
   isInteractive?: boolean
   label?: {
     amount: number
+    amountIRT?: number | null
     position?: 'bottom' | 'center'
     title: string
   }
@@ -44,7 +45,14 @@ export const GridTileImage: React.FC<Props> = ({
           width={80}
         />
       ) : null}
-      {label ? <Label amount={label.amount} position={label.position} title={label.title} /> : null}
+      {label ? (
+        <Label
+          amount={label.amount}
+          amountIRT={label.amountIRT}
+          position={label.position}
+          title={label.title}
+        />
+      ) : null}
     </div>
   )
 }

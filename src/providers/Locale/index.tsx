@@ -1,15 +1,15 @@
 'use client'
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import {
+  LOCALE_COOKIE_NAME,
   type Locale,
   defaultLocale,
   getDirection,
   isRTL,
   locales,
-  LOCALE_COOKIE_NAME,
 } from '@/i18n/config'
 
 type LocaleContextType = {
@@ -31,14 +31,16 @@ const getLocaleFromCookie = (): Locale | null => {
   return null
 }
 
-const getBrowserLocale = (): Locale | null => {
-  if (typeof navigator === 'undefined') return null
-  const browserLang = navigator.language.split('-')[0] as Locale
-  if (locales.includes(browserLang)) {
-    return browserLang
-  }
-  return null
-}
+// Note: Browser locale detection is disabled to ensure defaultLocale (fa) is used
+// for first-time visitors. Enable this if you want to auto-detect browser language.
+// const getBrowserLocale = (): Locale | null => {
+//   if (typeof navigator === 'undefined') return null
+//   const browserLang = navigator.language.split('-')[0] as Locale
+//   if (locales.includes(browserLang)) {
+//     return browserLang
+//   }
+//   return null
+// }
 
 const setLocaleCookie = (locale: Locale) => {
   if (typeof document === 'undefined') return
@@ -53,14 +55,13 @@ export const LocaleProvider: React.FC<{
   const router = useRouter()
 
   useEffect(() => {
-    // Detect initial locale from cookie or browser
+    // Detect initial locale from cookie, fallback to defaultLocale (fa)
     const cookieLocale = getLocaleFromCookie()
-    const browserLocale = getBrowserLocale()
-    const initialLocale = cookieLocale || browserLocale || defaultLocale
+    const initialLocale = cookieLocale || defaultLocale
 
     setLocaleState(initialLocale)
 
-    // If no cookie was set, save the detected locale
+    // If no cookie was set, save the default locale
     if (!cookieLocale) {
       setLocaleCookie(initialLocale)
     }

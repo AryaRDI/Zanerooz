@@ -183,7 +183,8 @@ function RelatedProducts({ products }: { products: Product[] }) {
             <Link className="relative h-full w-full" href={`/products/${product.slug}`}>
               <GridTileImage
                 label={{
-                  amount: product.priceInUSD!,
+                  amount: product.priceInUSD ?? 0,
+                  amountIRT: product.priceInIRT,
                   title: product.title,
                 }}
                 media={product.meta?.image as Media}
