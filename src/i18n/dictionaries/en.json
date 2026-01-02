@@ -159,5 +159,61 @@
       "cta": "Get first access to new drops and private offers.",
       "button": "Create an account"
     }
+  },
+  "about": {
+    "title": "About Us",
+    "breadcrumbHome": "Home",
+    "story": {
+      "heading": "The Story of",
+      "brandName": "Zanerooz",
+      "paragraph1": "Zanerooz began in 2009 with the goal of providing authentic, high-quality products from renowned global brands. With our commitment to product authenticity and customer satisfaction, we have gained the trust of thousands of customers.",
+      "paragraph2": "Our team travels to different countries and works directly with trusted brands to curate the best and latest products for you. Every product is inspected by our experts before shipping and receives a certificate of authenticity.",
+      "paragraph3": "We are committed to values such as honesty, quality, and customer respect, and strive to provide you with the best online shopping experience.",
+      "imageAlt": "Zanerooz Store",
+      "experienceYears": "15+",
+      "experienceLabel": "Years of Experience"
+    },
+    "stats": {
+      "yearsExperience": "Years of Experience",
+      "yearsValue": "15+",
+      "happyCustomers": "Happy Customers",
+      "customersValue": "50,000+",
+      "trustedBrands": "Trusted Brands",
+      "brandsValue": "100+",
+      "authenticProducts": "Authentic Products",
+      "authenticValue": "100%"
+    },
+    "values": {
+      "heading": "Our Values",
+      "authentic": {
+        "title": "Product Authenticity",
+        "description": "All our products are 100% authentic and come with a certificate of authenticity."
+      },
+      "satisfaction": {
+        "title": "Customer Satisfaction",
+        "description": "Your satisfaction is our priority. 24/7 support is at your service."
+      },
+      "global": {
+        "title": "Global Brands",
+        "description": "Direct collaboration with over 100 reputable global brands."
+      }
+    },
+    "team": {
+      "heading": "Our Team",
+      "members": {
+        "sara": {
+          "name": "Sara Ahmadi",
+          "role": "CEO"
+        },
+        "ali": {
+          "name": "Ali Mohammadi",
+          "role": "Marketing Director"
+        },
+        "maryam": {
+          "name": "Maryam Hosseini",
+          "role": "Senior Designer"
+        }
+      }
+    }
   }
 }
