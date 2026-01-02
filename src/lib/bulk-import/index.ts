@@ -107,6 +107,12 @@ export async function processProductImport(
             ? Math.round(parseFloat(row.price_usd) * 100) // Convert to cents
             : undefined
 
+        // Parse inventory (optional, defaults to 0 if not provided)
+        const inventory =
+          row.inventory !== undefined && row.inventory !== ''
+            ? parseInt(row.inventory, 10)
+            : 0
+
         const productData = {
           title: {
             en: row.title_en,
@@ -116,6 +122,8 @@ export async function processProductImport(
             en: textToLexical(row.description_en || ''),
             fa: textToLexical(row.description_fa || ''),
           },
+          // Pass explicit slug if provided, otherwise handler will auto-generate
+          ...(row.slug && row.slug.trim() ? { slug: row.slug.trim() } : {}),
           priceInIRT,
           priceInIRTEnabled: true,
           ...(priceInUSD !== undefined
@@ -126,6 +134,7 @@ export async function processProductImport(
             : {
                 priceInUSDEnabled: false,
               }),
+          inventory,
           _status: row.status,
           gallery: imageIds.map((id) => ({ image: id })),
           categories: categoryIds,

@@ -14,6 +14,8 @@ export interface ProductRow {
   categories?: string
   meta_title?: string
   meta_description?: string
+  inventory?: string
+  slug?: string
 }
 
 /**
@@ -86,6 +88,24 @@ export function validateRow(row: any): ValidationResult {
       if (validUrls.length === 0) {
         errors.push('image_urls must contain at least one valid URL')
       }
+    }
+  }
+
+  // Optional: inventory (must be non-negative integer if provided)
+  if (row.inventory !== undefined && row.inventory !== '') {
+    const inventoryNum = parseInt(row.inventory, 10)
+    if (isNaN(inventoryNum) || inventoryNum < 0) {
+      errors.push('inventory must be a non-negative integer')
+    } else if (!Number.isInteger(parseFloat(row.inventory))) {
+      errors.push('inventory must be a whole number')
+    }
+  }
+
+  // Optional: slug (must be URL-friendly if provided)
+  if (row.slug !== undefined && row.slug !== '') {
+    const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+    if (!slugPattern.test(row.slug)) {
+      errors.push('slug must be lowercase letters, numbers, and hyphens only (e.g., "my-product-name")')
     }
   }
 
