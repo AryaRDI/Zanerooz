@@ -10,10 +10,12 @@ import {
 import { sorting } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import configPromise from '@payload-config'
-import { ChevronDown, Grid3X3, LayoutList } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Grid3X3, LayoutList } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPayload, Where } from 'payload'
+
+const PRODUCTS_PER_PAGE = 12
 
 export const metadata: Metadata = {
   description: 'Search for products in the store.',
@@ -37,6 +39,8 @@ export default async function ShopPage({ searchParams }: Props) {
   const sort = normalizeParam(resolvedSearchParams.sort)
   const viewParam = normalizeParam(resolvedSearchParams.view)
   const viewMode = viewParam === 'list' ? 'list' : 'grid'
+  const pageParam = normalizeParam(resolvedSearchParams.page)
+  const currentPage = Math.max(1, parseInt(pageParam || '1', 10) || 1)
   const categoryParam = resolvedSearchParams.category
   const categoryValues = categoryParam
     ? Array.isArray(categoryParam)
@@ -85,6 +89,8 @@ export default async function ShopPage({ searchParams }: Props) {
     collection: 'products',
     draft: false,
     overrideAccess: false,
+    limit: PRODUCTS_PER_PAGE,
+    page: currentPage,
     select: {
       title: true,
       slug: true,
@@ -99,6 +105,8 @@ export default async function ShopPage({ searchParams }: Props) {
     },
   })
 
+  const { totalDocs, totalPages, hasNextPage, hasPrevPage } = products
+
   const buildURL = (updates: Record<string, string | null | undefined>) => {
     const params = new URLSearchParams()
 
@@ -106,6 +114,8 @@ export default async function ShopPage({ searchParams }: Props) {
     if (sort) params.set('sort', sort)
     if (viewParam) params.set('view', viewParam)
     if (categoryValues[0]) params.set('category', categoryValues[0])
+    // Preserve current page unless explicitly updating it
+    if (currentPage > 1 && !('page' in updates)) params.set('page', String(currentPage))
 
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === '') {
@@ -117,6 +127,24 @@ export default async function ShopPage({ searchParams }: Props) {
 
     const query = params.toString()
     return query ? `/shop?${query}` : '/shop'
+  }
+
+  // Generate page numbers to display (max 5 pages centered around current)
+  const getPageNumbers = () => {
+    const pages: number[] = []
+    const maxVisible = 5
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2))
+    const end = Math.min(totalPages, start + maxVisible - 1)
+
+    // Adjust start if we're near the end
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1)
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i)
+    }
+    return pages
   }
 
   const currentSortLabel =
@@ -173,7 +201,7 @@ export default async function ShopPage({ searchParams }: Props) {
         </div>
 
         <span className="text-muted-foreground text-sm">
-          {formatNumber(products.docs.length)} محصول یافت شد
+          {formatNumber(totalDocs)} محصول یافت شد
         </span>
       </div>
 
@@ -183,16 +211,100 @@ export default async function ShopPage({ searchParams }: Props) {
           محصولی یافت نشد. فیلترها را تغییر دهید.
         </div>
       ) : (
-        <div
-          className={cn(
-            'grid gap-6',
-            viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1',
+        <>
+          <div
+            className={cn(
+              'grid gap-6',
+              viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1',
+            )}
+          >
+            {products.docs.map((product) => (
+              <ProductCard key={product.id} product={product} viewMode={viewMode} />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <nav className="flex items-center justify-center gap-1 mt-10" aria-label="صفحه‌بندی">
+              {/* Previous */}
+              {hasPrevPage ? (
+                <Link
+                  href={buildURL({ page: String(currentPage - 1) })}
+                  className="p-2 rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                  aria-label="صفحه قبل"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Link>
+              ) : (
+                <span className="p-2 rounded-md border border-border bg-muted/50 text-muted-foreground cursor-not-allowed">
+                  <ChevronRight className="w-5 h-5" />
+                </span>
+              )}
+
+              {/* First page + ellipsis */}
+              {getPageNumbers()[0] > 1 && (
+                <>
+                  <Link
+                    href={buildURL({ page: '1' })}
+                    className="px-3 py-2 rounded-md border border-border bg-card hover:bg-muted transition-colors text-sm"
+                  >
+                    {formatNumber(1)}
+                  </Link>
+                  {getPageNumbers()[0] > 2 && (
+                    <span className="px-2 text-muted-foreground">...</span>
+                  )}
+                </>
+              )}
+
+              {/* Page numbers */}
+              {getPageNumbers().map((page) => (
+                <Link
+                  key={page}
+                  href={buildURL({ page: String(page) })}
+                  className={cn(
+                    'px-3 py-2 rounded-md border text-sm transition-colors',
+                    page === currentPage
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'border-border bg-card hover:bg-muted',
+                  )}
+                  aria-current={page === currentPage ? 'page' : undefined}
+                >
+                  {formatNumber(page)}
+                </Link>
+              ))}
+
+              {/* Last page + ellipsis */}
+              {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
+                <>
+                  {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && (
+                    <span className="px-2 text-muted-foreground">...</span>
+                  )}
+                  <Link
+                    href={buildURL({ page: String(totalPages) })}
+                    className="px-3 py-2 rounded-md border border-border bg-card hover:bg-muted transition-colors text-sm"
+                  >
+                    {formatNumber(totalPages)}
+                  </Link>
+                </>
+              )}
+
+              {/* Next */}
+              {hasNextPage ? (
+                <Link
+                  href={buildURL({ page: String(currentPage + 1) })}
+                  className="p-2 rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                  aria-label="صفحه بعد"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Link>
+              ) : (
+                <span className="p-2 rounded-md border border-border bg-muted/50 text-muted-foreground cursor-not-allowed">
+                  <ChevronLeft className="w-5 h-5" />
+                </span>
+              )}
+            </nav>
           )}
-        >
-          {products.docs.map((product) => (
-            <ProductCard key={product.id} product={product} viewMode={viewMode} />
-          ))}
-        </div>
+        </>
       )}
     </>
   )
