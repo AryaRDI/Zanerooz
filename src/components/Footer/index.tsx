@@ -114,13 +114,32 @@ export async function Footer() {
             &copy; {copyrightDate} {copyrightName}
             {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} {dict.footer.allRightsReserved}.
           </p>
-          {badges.length ? (
-            <div className="flex gap-6 text-sm text-primary-foreground/50">
-              {badges.map((badge) => (
-                <span key={badge.id}>{badge.label}</span>
-              ))}
-            </div>
-          ) : null}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {badges.length ? (
+              <div className="flex gap-6 text-sm text-primary-foreground/50">
+                {badges.map((badge) => (
+                  <span key={badge.id}>{badge.label}</span>
+                ))}
+              </div>
+            ) : null}
+            <a
+              referrerPolicy="origin"
+              target="_blank"
+              href="https://trustseal.enamad.ir/?id=5618515&Code=OzGgSBB6ldlX60phqh57af17KEIHHN2d"
+              rel="noopener noreferrer"
+              aria-label="Enamad trust seal"
+              className="inline-flex items-center"
+              data-code="OzGgSBB6ldlX60phqh57af17KEIHHN2d"
+            >
+              <img
+                referrerPolicy="origin"
+                src="https://trustseal.enamad.ir/logo.aspx?id=5618515&Code=OzGgSBB6ldlX60phqh57af17KEIHHN2d"
+                alt="Enamad trust seal"
+                className="h-10 w-auto cursor-pointer"
+                loading="lazy"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
