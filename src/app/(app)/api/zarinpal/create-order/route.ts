@@ -4,20 +4,20 @@ import { getPayload } from 'payload'
 
 /**
  * POST /api/zarinpal/create-order
- * 
+ *
  * Create an order after successful Zarinpal payment verification
  */
 export async function POST(req: NextRequest) {
   try {
     const payload = await getPayload({ config })
     const body = await req.json()
-    const { cartId, authority, refId, cardPan, customerEmail } = body
+    const { cartId, authority, refId, cardPan, customerEmail, shippingAddress } = body
 
     // Validate required fields
     if (!cartId || !authority || !refId) {
       return NextResponse.json(
         { error: 'Missing required fields: cartId, authority, refId' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -29,11 +29,12 @@ export async function POST(req: NextRequest) {
     })
 
     if (!cart) {
-      return NextResponse.json(
-        { error: 'Cart not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Cart not found' }, { status: 404 })
     }
+
+    // Resolve customer ID from cart
+    const customerId =
+      cart.customer && typeof cart.customer === 'object' ? cart.customer.id : cart.customer
 
     // Create transaction record
     // Note: Using stripe field to store Zarinpal data since Transaction schema doesn't have zarinpal-specific fields
@@ -44,11 +45,13 @@ export async function POST(req: NextRequest) {
         amount: cart.subtotal || 0,
         currency: 'IRT',
         cart: cart.id,
+        items: cart.items || [],
+        ...(customerId && { customer: customerId }),
         ...(customerEmail && { customerEmail }),
         // Store Zarinpal data in stripe field (repurposed for compatibility)
         stripe: {
-          paymentIntentID: `zarinpal_${refId}_${authority}`, // Format: zarinpal_refId_authority
-          customerID: cardPan || null, // Store card PAN in customerID field
+          paymentIntentID: `zarinpal_${refId}_${authority}`,
+          customerID: cardPan || null,
         },
       },
     })
@@ -57,22 +60,35 @@ export async function POST(req: NextRequest) {
     const order = await payload.create({
       collection: 'orders',
       data: {
-        cart: cart.id,
-        total: cart.subtotal || 0,
+        amount: cart.subtotal || 0,
+        currency: 'IRT',
         status: 'processing',
+        items: cart.items || [],
+        transactions: [transaction.id],
+        ...(customerId && { customer: customerId }),
         ...(customerEmail && { customerEmail }),
-        transaction: transaction.id,
-        items: cart.items,
+        ...(shippingAddress && { shippingAddress }),
       },
     })
 
-    // Clear the cart
+    // Link transaction back to order
+    await payload.update({
+      collection: 'transactions',
+      id: transaction.id,
+      data: {
+        order: order.id,
+      },
+    })
+
+    // Mark cart as purchased
     await payload.update({
       collection: 'carts',
       id: cart.id,
       data: {
         items: [],
         subtotal: 0,
+        status: 'purchased',
+        purchasedAt: new Date().toISOString(),
       },
     })
 
@@ -82,17 +98,15 @@ export async function POST(req: NextRequest) {
       transactionID: transaction.id,
       message: 'Order created successfully',
     })
-
   } catch (error) {
     console.error('Zarinpal create order error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to create order',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
-

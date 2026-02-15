@@ -18,7 +18,8 @@
     "or": "یا",
     "select": "انتخاب",
     "remove": "حذف",
-    "tryAgain": "تلاش مجدد"
+    "tryAgain": "تلاش مجدد",
+    "processing": "در حال پردازش"
   },
   "navigation": {
     "home": "خانه",
@@ -52,7 +53,15 @@
     "checkout": "تسویه حساب",
     "continueShopping": "ادامه خرید",
     "remove": "حذف",
-    "updateQuantity": "بروزرسانی تعداد"
+    "updateQuantity": "بروزرسانی تعداد",
+    "viewCart": "مشاهده سبد خرید",
+    "emptyTitle": "سبد خرید شما خالی است",
+    "emptyDesc": "محصولات مورد علاقه خود را به سبد خرید اضافه کنید",
+    "viewProducts": "مشاهده محصولات",
+    "shipping": "هزینه ارسال",
+    "free": "رایگان",
+    "proceedCheckout": "تکمیل سفارش",
+    "itemAdded": "محصول به سبد خرید اضافه شد."
   },
   "checkout": {
     "title": "تسویه حساب",
@@ -87,7 +96,21 @@
     "stripe": {
       "title": "استرایپ",
       "description": "کارت‌های اعتباری بین‌المللی"
-    }
+    },
+    "steps": {
+      "shipping": "آدرس ارسال",
+      "payment": "روش پرداخت",
+      "confirm": "تأیید سفارش"
+    },
+    "nextStep": "مرحله بعد",
+    "prevStep": "مرحله قبل",
+    "backToCart": "بازگشت به سبد خرید",
+    "confirmAndPay": "تأیید و پرداخت",
+    "editAddress": "ویرایش",
+    "editPayment": "ویرایش",
+    "orderSuccess": "سفارش شما با موفقیت ثبت شد!",
+    "orderSuccessDesc": "اطلاعات سفارش به شماره تلفن شما ارسال خواهد شد.",
+    "shippingInfo": "اطلاعات ارسال"
   },
   "account": {
     "title": "حساب کاربری من",
@@ -95,8 +118,80 @@
     "profile": "پروفایل",
     "orderHistory": "تاریخچه سفارشات",
     "addresses": "آدرس‌ها",
-    "settings": "تنظیمات",
-    "noOrders": "هنوز سفارشی ثبت نشده است"
+    "settings": "تنظیمات حساب کاربری",
+    "noOrders": "هنوز سفارشی ثبت نشده است",
+    "updateSuccess": "حساب کاربری با موفقیت به‌روزرسانی شد.",
+    "updateError": "مشکلی در به‌روزرسانی حساب کاربری رخ داد.",
+    "settingsTitle": "تنظیمات حساب کاربری",
+    "changeDetails": "اطلاعات حساب کاربری خود را در زیر تغییر دهید، یا",
+    "clickToChangePassword": "برای تغییر رمز عبور اینجا کلیک کنید.",
+    "changePasswordBelow": "رمز عبور خود را در زیر تغییر دهید، یا",
+    "emailLabel": "آدرس ایمیل",
+    "nameLabel": "نام",
+    "newPassword": "رمز عبور جدید",
+    "confirmPasswordLabel": "تأیید رمز عبور",
+    "processing": "در حال پردازش...",
+    "changePassword": "تغییر رمز عبور",
+    "updateAccount": "بروزرسانی حساب",
+    "recentOrders": "سفارشات اخیر",
+    "recentOrdersDesc": "این‌ها آخرین سفارشاتی هستند که ثبت کرده‌اید.",
+    "viewAllOrders": "مشاهده همه سفارشات",
+    "noAddresses": "آدرسی یافت نشد.",
+    "loginWarning": "لطفاً برای دسترسی به تنظیمات حساب وارد شوید."
+  },
+  "orders": {
+    "title": "سفارشات",
+    "viewOrder": "مشاهده سفارش",
+    "item": "محصول",
+    "items": "محصول",
+    "noOrders": "سفارشی ندارید.",
+    "allOrders": "همه سفارشات",
+    "orderPrefix": "سفارش",
+    "orderDate": "تاریخ سفارش",
+    "total": "مجموع",
+    "status": "وضعیت",
+    "shippingAddress": "آدرس ارسال",
+    "itemUnavailable": "این محصول دیگر موجود نیست.",
+    "loginWarning": "لطفاً برای دسترسی به سفارشات وارد شوید."
+  },
+  "address": {
+    "addNew": "افزودن آدرس جدید",
+    "connectedToAccount": "این آدرس به حساب کاربری شما متصل خواهد شد.",
+    "editAddress": "ویرایش آدرس",
+    "titles": {
+      "mr": "آقا",
+      "mrs": "خانم",
+      "ms": "خانم",
+      "dr": "دکتر",
+      "prof": "پروفسور",
+      "mx": "Mx.",
+      "other": "سایر"
+    },
+    "form": {
+      "titleLabel": "عنوان",
+      "titlePlaceholder": "عنوان",
+      "firstNameLabel": "نام*",
+      "lastNameLabel": "نام خانوادگی*",
+      "phoneLabel": "تلفن",
+      "companyLabel": "شرکت",
+      "addressLine1Label": "آدرس خط ۱*",
+      "addressLine2Label": "آدرس خط ۲",
+      "cityLabel": "شهر*",
+      "stateLabel": "استان",
+      "postalCodeLabel": "کد پستی*",
+      "countryLabel": "کشور*",
+      "countryPlaceholder": "کشور",
+      "countryIran": "ایران",
+      "submitLabel": "ذخیره آدرس",
+      "errors": {
+        "firstNameRequired": "وارد کردن نام الزامی است.",
+        "lastNameRequired": "وارد کردن نام خانوادگی الزامی است.",
+        "addressLine1Required": "وارد کردن آدرس خط ۱ الزامی است.",
+        "cityRequired": "وارد کردن شهر الزامی است.",
+        "postalCodeRequired": "وارد کردن کد پستی الزامی است.",
+        "countryRequired": "وارد کردن کشور الزامی است."
+      }
+    }
   },
   "auth": {
     "email": "ایمیل",
@@ -109,7 +204,21 @@
     "notYou": "شما نیستید؟",
     "resetPassword": "بازنشانی رمز عبور",
     "alreadyHaveAccount": "قبلاً حساب کاربری دارید؟",
-    "dontHaveAccount": "حساب کاربری ندارید؟"
+    "dontHaveAccount": "حساب کاربری ندارید؟",
+    "alreadyLoggedIn": "شما قبلاً وارد شده‌اید.",
+    "createAccountDescription": "حساب کاربری بسازید یا وارد حساب فعلی خود شوید.",
+    "createAccountIntro": "اینجا می‌توانید به عنوان مشتری جدید ثبت‌نام کرده و حساب کاربری ایجاد کنید.",
+    "manageUsersPrefix": "برای مدیریت همه کاربران،",
+    "adminDashboardLogin": "وارد داشبورد مدیریت شوید",
+    "createAccountError": "مشکلی در ایجاد حساب کاربری رخ داد.",
+    "credentialsError": "مشکلی در اطلاعات ورود رخ داد. لطفاً دوباره تلاش کنید.",
+    "accountCreatedSuccess": "حساب کاربری با موفقیت ایجاد شد",
+    "emailAddress": "آدرس ایمیل",
+    "newPassword": "رمز عبور جدید",
+    "emailRequired": "وارد کردن ایمیل الزامی است.",
+    "passwordRequired": "وارد کردن رمز عبور الزامی است.",
+    "confirmPasswordRequired": "لطفاً رمز عبور را تأیید کنید.",
+    "passwordsDoNotMatch": "رمزهای عبور یکسان نیستند"
   },
   "footer": {
     "groups": {

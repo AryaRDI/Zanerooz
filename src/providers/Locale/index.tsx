@@ -31,6 +31,20 @@ const getLocaleFromCookie = (): Locale | null => {
   return null
 }
 
+const getInitialLocale = (): Locale => {
+  if (typeof document === 'undefined') return defaultLocale
+
+  const docLocale = document.documentElement.lang as Locale | undefined
+  if (docLocale && locales.includes(docLocale)) {
+    return docLocale
+  }
+
+  const cookieLocale = getLocaleFromCookie()
+  if (cookieLocale) return cookieLocale
+
+  return defaultLocale
+}
+
 // Note: Browser locale detection is disabled to ensure defaultLocale (fa) is used
 // for first-time visitors. Enable this if you want to auto-detect browser language.
 // const getBrowserLocale = (): Locale | null => {
@@ -51,15 +65,16 @@ const setLocaleCookie = (locale: Locale) => {
 export const LocaleProvider: React.FC<{
   children: React.ReactNode
 }> = ({ children }) => {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale)
+  const [locale, setLocaleState] = useState<Locale>(() => getInitialLocale())
   const router = useRouter()
 
   useEffect(() => {
-    // Detect initial locale from cookie, fallback to defaultLocale (fa)
     const cookieLocale = getLocaleFromCookie()
-    const initialLocale = cookieLocale || defaultLocale
+    const initialLocale = getInitialLocale()
 
-    setLocaleState(initialLocale)
+    if (initialLocale !== locale) {
+      setLocaleState(initialLocale)
+    }
 
     // If no cookie was set, save the default locale
     if (!cookieLocale) {

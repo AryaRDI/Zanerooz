@@ -18,7 +18,8 @@
     "or": "or",
     "select": "Select",
     "remove": "Remove",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "processing": "Processing"
   },
   "navigation": {
     "home": "Home",
@@ -52,7 +53,15 @@
     "checkout": "Checkout",
     "continueShopping": "Continue Shopping",
     "remove": "Remove",
-    "updateQuantity": "Update quantity"
+    "updateQuantity": "Update quantity",
+    "viewCart": "View Cart",
+    "emptyTitle": "Your cart is empty",
+    "emptyDesc": "Add products to your cart",
+    "viewProducts": "View Products",
+    "shipping": "Shipping",
+    "free": "Free",
+    "proceedCheckout": "Proceed to Checkout",
+    "itemAdded": "Item added to cart."
   },
   "checkout": {
     "title": "Checkout",
@@ -87,7 +96,21 @@
     "stripe": {
       "title": "Stripe",
       "description": "International credit/debit cards"
-    }
+    },
+    "steps": {
+      "shipping": "Shipping Address",
+      "payment": "Payment Method",
+      "confirm": "Confirm Order"
+    },
+    "nextStep": "Next Step",
+    "prevStep": "Previous Step",
+    "backToCart": "Back to Cart",
+    "confirmAndPay": "Confirm and Pay",
+    "editAddress": "Edit",
+    "editPayment": "Edit",
+    "orderSuccess": "Order placed successfully!",
+    "orderSuccessDesc": "Order info will be sent to your phone.",
+    "shippingInfo": "Shipping Info"
   },
   "account": {
     "title": "My Account",
@@ -95,8 +118,80 @@
     "profile": "Profile",
     "orderHistory": "Order History",
     "addresses": "Addresses",
-    "settings": "Settings",
-    "noOrders": "No orders yet"
+    "settings": "Account settings",
+    "noOrders": "No orders yet",
+    "updateSuccess": "Successfully updated account.",
+    "updateError": "There was a problem updating your account.",
+    "settingsTitle": "Account settings",
+    "changeDetails": "Change your account details below, or",
+    "clickToChangePassword": "click here to change your password.",
+    "changePasswordBelow": "Change your password below, or",
+    "emailLabel": "Email Address",
+    "nameLabel": "Name",
+    "newPassword": "New password",
+    "confirmPasswordLabel": "Confirm password",
+    "processing": "Processing",
+    "changePassword": "Change Password",
+    "updateAccount": "Update Account",
+    "recentOrders": "Recent Orders",
+    "recentOrdersDesc": "These are the most recent orders you have placed.",
+    "viewAllOrders": "View all orders",
+    "noAddresses": "No addresses found.",
+    "loginWarning": "Please login to access your account settings."
+  },
+  "orders": {
+    "title": "Orders",
+    "viewOrder": "View Order",
+    "item": "Item",
+    "items": "Items",
+    "noOrders": "You have no orders.",
+    "allOrders": "All orders",
+    "orderPrefix": "Order",
+    "orderDate": "Order Date",
+    "total": "Total",
+    "status": "Status",
+    "shippingAddress": "Shipping Address",
+    "itemUnavailable": "This item is no longer available.",
+    "loginWarning": "Please login to access your orders."
+  },
+  "address": {
+    "addNew": "Add a new address",
+    "connectedToAccount": "This address will be connected to your account.",
+    "editAddress": "Edit address",
+    "titles": {
+      "mr": "Mr.",
+      "mrs": "Mrs.",
+      "ms": "Ms.",
+      "dr": "Dr.",
+      "prof": "Prof.",
+      "mx": "Mx.",
+      "other": "Other"
+    },
+    "form": {
+      "titleLabel": "Title",
+      "titlePlaceholder": "Title",
+      "firstNameLabel": "First name*",
+      "lastNameLabel": "Last name*",
+      "phoneLabel": "Phone",
+      "companyLabel": "Company",
+      "addressLine1Label": "Address line 1*",
+      "addressLine2Label": "Address line 2",
+      "cityLabel": "City*",
+      "stateLabel": "State",
+      "postalCodeLabel": "Zip Code*",
+      "countryLabel": "Country*",
+      "countryPlaceholder": "Country",
+      "countryIran": "Iran",
+      "submitLabel": "Save address",
+      "errors": {
+        "firstNameRequired": "First name is required.",
+        "lastNameRequired": "Last name is required.",
+        "addressLine1Required": "Address line 1 is required.",
+        "cityRequired": "City is required.",
+        "postalCodeRequired": "Postal code is required.",
+        "countryRequired": "Country is required."
+      }
+    }
   },
   "auth": {
     "email": "Email",
@@ -109,7 +204,21 @@
     "notYou": "Not you?",
     "resetPassword": "Reset Password",
     "alreadyHaveAccount": "Already have an account?",
-    "dontHaveAccount": "Don't have an account?"
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyLoggedIn": "You are already logged in.",
+    "createAccountDescription": "Create an account or log in to your existing account.",
+    "createAccountIntro": "This is where new customers can signup and create a new account.",
+    "manageUsersPrefix": "To manage all users,",
+    "adminDashboardLogin": "login to the admin dashboard",
+    "createAccountError": "There was an error creating the account.",
+    "credentialsError": "There was an error with the credentials provided. Please try again.",
+    "accountCreatedSuccess": "Account created successfully",
+    "emailAddress": "Email Address",
+    "newPassword": "New password",
+    "emailRequired": "Email is required.",
+    "passwordRequired": "Password is required.",
+    "confirmPasswordRequired": "Please confirm your password.",
+    "passwordsDoNotMatch": "The passwords do not match"
   },
   "footer": {
     "groups": {

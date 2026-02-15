@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { User } from '@/payload-types'
 import { useAuth } from '@/providers/Auth'
+import { useTranslation } from '@/i18n/useTranslation'
 import { useRouter } from 'next/navigation'
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -21,6 +22,7 @@ type FormData = {
 
 export const AccountForm: React.FC = () => {
   const { setUser, user } = useAuth()
+  const { t } = useTranslation()
   const [changePassword, setChangePassword] = useState(false)
 
   const {
@@ -52,7 +54,7 @@ export const AccountForm: React.FC = () => {
         if (response.ok) {
           const json = await response.json()
           setUser(json.doc)
-          toast.success('Successfully updated account.')
+          toast.success(t('account.updateSuccess', 'Successfully updated account.'))
           setChangePassword(false)
           reset({
             name: json.doc.name,
@@ -61,7 +63,7 @@ export const AccountForm: React.FC = () => {
             passwordConfirm: '',
           })
         } else {
-          toast.error('There was a problem updating your account.')
+          toast.error(t('account.updateError', 'There was a problem updating your account.'))
         }
       }
     },
@@ -94,23 +96,22 @@ export const AccountForm: React.FC = () => {
         <Fragment>
           <div className="prose dark:prose-invert mb-8">
             <p className="">
-              {'Change your account details below, or '}
+              {t('account.changeDetails')}{' '}
               <Button
                 className="px-0 text-inherit underline hover:cursor-pointer"
                 onClick={() => setChangePassword(!changePassword)}
                 type="button"
                 variant="link"
               >
-                click here
+                {t('account.clickToChangePassword')}
               </Button>
-              {' to change your password.'}
             </p>
           </div>
 
           <div className="flex flex-col gap-8 mb-8">
             <FormItem>
               <Label htmlFor="email" className="mb-2">
-                Email Address
+                {t('account.emailLabel')}
               </Label>
               <Input
                 id="email"
@@ -122,7 +123,7 @@ export const AccountForm: React.FC = () => {
 
             <FormItem>
               <Label htmlFor="name" className="mb-2">
-                Name
+                {t('account.nameLabel')}
               </Label>
               <Input
                 id="name"
@@ -137,14 +138,14 @@ export const AccountForm: React.FC = () => {
         <Fragment>
           <div className="prose dark:prose-invert mb-8">
             <p>
-              {'Change your password below, or '}
+              {t('account.changePasswordBelow')}{' '}
               <Button
                 className="px-0 text-inherit underline hover:cursor-pointer"
                 onClick={() => setChangePassword(!changePassword)}
                 type="button"
                 variant="link"
               >
-                cancel
+                {t('common.cancel')}
               </Button>
               .
             </p>
@@ -153,7 +154,7 @@ export const AccountForm: React.FC = () => {
           <div className="flex flex-col gap-8 mb-8">
             <FormItem>
               <Label htmlFor="password" className="mb-2">
-                New password
+                {t('account.newPassword')}
               </Label>
               <Input
                 id="password"
@@ -165,7 +166,7 @@ export const AccountForm: React.FC = () => {
 
             <FormItem>
               <Label htmlFor="passwordConfirm" className="mb-2">
-                Confirm password
+                {t('account.confirmPasswordLabel')}
               </Label>
               <Input
                 id="passwordConfirm"
@@ -182,10 +183,10 @@ export const AccountForm: React.FC = () => {
       )}
       <Button disabled={isLoading || isSubmitting || !isDirty} type="submit" variant="default">
         {isLoading || isSubmitting
-          ? 'Processing'
+          ? t('account.processing')
           : changePassword
-            ? 'Change Password'
-            : 'Update Account'}
+            ? t('account.changePassword')
+            : t('account.updateAccount')}
       </Button>
     </form>
   )

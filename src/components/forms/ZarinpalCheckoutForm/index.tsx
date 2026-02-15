@@ -3,7 +3,6 @@
 import React, { FormEvent, useCallback, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Message } from '@/components/Message'
-import { useRouter } from 'next/navigation'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { useTranslation } from '@/i18n/useTranslation'
@@ -12,6 +11,7 @@ import { Address } from '@/payload-types'
 type Props = {
   customerEmail?: string
   billingAddress?: Partial<Address>
+  shippingAddress?: Partial<Address>
   cartTotal: number
   setProcessingPayment: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -19,12 +19,12 @@ type Props = {
 export const ZarinpalCheckoutForm: React.FC<Props> = ({
   customerEmail,
   billingAddress,
+  shippingAddress,
   cartTotal,
   setProcessingPayment,
 }) => {
   const [error, setError] = useState<null | string>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
   const { cart } = useCart()
   const { t } = useTranslation()
 
@@ -58,11 +58,13 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
         }
 
         // Store payment data in sessionStorage for verification callback
+        // Include shippingAddress so the order can be created with it after verification
         sessionStorage.setItem('zarinpal_payment', JSON.stringify({
           authority: data.authority,
           amount: data.amount,
           customerEmail,
           cartId: cart?.id,
+          shippingAddress: shippingAddress || billingAddress || null,
         }))
 
         // Redirect to Zarinpal payment gateway
@@ -75,7 +77,7 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
         setProcessingPayment(false)
       }
     },
-    [cartTotal, billingAddress?.phone, customerEmail, cart?.id, cart?.items?.length, setProcessingPayment],
+    [cartTotal, billingAddress?.phone, customerEmail, cart?.id, cart?.items?.length, setProcessingPayment, shippingAddress, billingAddress],
   )
 
   return (
@@ -93,7 +95,7 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
         <p className="text-sm text-muted-foreground mb-4">
           با کلیک بر روی دکمه پرداخت، به درگاه امن زرین‌پال منتقل خواهید شد.
         </p>
-        
+
         <div className="space-y-2 text-sm">
           {customerEmail && (
             <div className="flex justify-between">
@@ -132,4 +134,3 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
     </form>
   )
 }
-

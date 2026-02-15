@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAddresses } from '@payloadcms/plugin-ecommerce/client/react'
-import { defaultCountries as supportedCountries } from '@payloadcms/plugin-ecommerce/client/react'
 import { Address, Config } from '@/payload-types'
 import {
   Select,
@@ -19,6 +18,7 @@ import { Button } from '@/components/ui/button'
 import { deepMergeSimple } from 'payload/shared'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
+import { useTranslation } from '@/i18n/useTranslation'
 
 type AddressFormValues = {
   title?: string | null
@@ -50,6 +50,7 @@ export const AddressForm: React.FC<Props> = ({
   callback,
   skipSubmission,
 }) => {
+  const { t } = useTranslation()
   const {
     register,
     handleSubmit,
@@ -60,6 +61,20 @@ export const AddressForm: React.FC<Props> = ({
   })
 
   const { createAddress, updateAddress } = useAddresses()
+
+  const titleLabels = {
+    'Mr.': t('address.titles.mr', 'Mr.'),
+    'Mrs.': t('address.titles.mrs', 'Mrs.'),
+    'Ms.': t('address.titles.ms', 'Ms.'),
+    'Dr.': t('address.titles.dr', 'Dr.'),
+    'Prof.': t('address.titles.prof', 'Prof.'),
+    'Mx.': t('address.titles.mx', 'Mx.'),
+    Other: t('address.titles.other', 'Other'),
+  } as const
+
+  const countryOptions = [
+    { value: 'IR', label: t('address.form.countryIran', 'ایران') },
+  ]
 
   const onSubmit = useCallback(
     async (data: AddressFormValues) => {
@@ -85,7 +100,7 @@ export const AddressForm: React.FC<Props> = ({
       <div className="flex flex-col gap-4 mb-8">
         <div className="flex flex-col md:flex-row gap-4">
           <FormItem className="shrink">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{t('address.form.titleLabel', 'Title')}</Label>
 
             <Select
               {...register('title')}
@@ -95,12 +110,12 @@ export const AddressForm: React.FC<Props> = ({
               defaultValue={initialData?.title || ''}
             >
               <SelectTrigger id="title">
-                <SelectValue placeholder="Title" />
+                <SelectValue placeholder={t('address.form.titlePlaceholder', 'Title')} />
               </SelectTrigger>
               <SelectContent>
                 {titles.map((title) => (
                   <SelectItem key={title} value={title}>
-                    {title}
+                    {titleLabels[title]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -109,85 +124,102 @@ export const AddressForm: React.FC<Props> = ({
           </FormItem>
 
           <FormItem>
-            <Label htmlFor="firstName">First name*</Label>
+            <Label htmlFor="firstName">{t('address.form.firstNameLabel', 'First name*')}</Label>
             <Input
               id="firstName"
               autoComplete="given-name"
-              {...register('firstName', { required: 'First name is required.' })}
+              {...register('firstName', {
+                required: t('address.form.errors.firstNameRequired', 'First name is required.'),
+              })}
             />
             {errors.firstName && <FormError message={errors.firstName.message} />}
           </FormItem>
 
           <FormItem>
-            <Label htmlFor="lastName">Last name*</Label>
+            <Label htmlFor="lastName">{t('address.form.lastNameLabel', 'Last name*')}</Label>
             <Input
               autoComplete="family-name"
               id="lastName"
-              {...register('lastName', { required: 'Last name is required.' })}
+              {...register('lastName', {
+                required: t('address.form.errors.lastNameRequired', 'Last name is required.'),
+              })}
             />
             {errors.lastName && <FormError message={errors.lastName.message} />}
           </FormItem>
         </div>
 
         <FormItem>
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone">{t('address.form.phoneLabel', 'Phone')}</Label>
           <Input type="tel" id="phone" autoComplete="mobile tel" {...register('phone')} />
           {errors.phone && <FormError message={errors.phone.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="company">Company</Label>
+          <Label htmlFor="company">{t('address.form.companyLabel', 'Company')}</Label>
           <Input id="company" autoComplete="organization" {...register('company')} />
           {errors.company && <FormError message={errors.company.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="addressLine1">Address line 1*</Label>
+          <Label htmlFor="addressLine1">
+            {t('address.form.addressLine1Label', 'Address line 1*')}
+          </Label>
           <Input
             id="addressLine1"
             autoComplete="address-line1"
-            {...register('addressLine1', { required: 'Address line 1 is required.' })}
+            {...register('addressLine1', {
+              required: t(
+                'address.form.errors.addressLine1Required',
+                'Address line 1 is required.',
+              ),
+            })}
           />
           {errors.addressLine1 && <FormError message={errors.addressLine1.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="addressLine2">Address line 2</Label>
+          <Label htmlFor="addressLine2">
+            {t('address.form.addressLine2Label', 'Address line 2')}
+          </Label>
           <Input id="addressLine2" autoComplete="address-line2" {...register('addressLine2')} />
           {errors.addressLine2 && <FormError message={errors.addressLine2.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="city">City*</Label>
+          <Label htmlFor="city">{t('address.form.cityLabel', 'City*')}</Label>
           <Input
             id="city"
             autoComplete="address-level2"
-            {...register('city', { required: 'City is required.' })}
+            {...register('city', {
+              required: t('address.form.errors.cityRequired', 'City is required.'),
+            })}
           />
           {errors.city && <FormError message={errors.city.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="state">State</Label>
+          <Label htmlFor="state">{t('address.form.stateLabel', 'State')}</Label>
           <Input id="state" autoComplete="address-level1" {...register('state')} />
           {errors.state && <FormError message={errors.state.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="postalCode">Zip Code*</Label>
+          <Label htmlFor="postalCode">{t('address.form.postalCodeLabel', 'Zip Code*')}</Label>
           <Input
             id="postalCode"
-            {...register('postalCode', { required: 'Postal code is required.' })}
+            {...register('postalCode', {
+              required: t('address.form.errors.postalCodeRequired', 'Postal code is required.'),
+            })}
           />
           {errors.postalCode && <FormError message={errors.postalCode.message} />}
         </FormItem>
 
         <FormItem>
-          <Label htmlFor="country">Country*</Label>
+          <Label htmlFor="country">{t('address.form.countryLabel', 'Country*')}</Label>
 
           <Select
             {...register('country', {
-              required: 'Country is required.',
+              required: t('address.form.errors.countryRequired', 'Country is required.'),
             })}
             onValueChange={(value) => {
               setValue('country', value, { shouldValidate: true })
@@ -196,31 +228,21 @@ export const AddressForm: React.FC<Props> = ({
             defaultValue={initialData?.country || ''}
           >
             <SelectTrigger id="country" className="w-full">
-              <SelectValue placeholder="Country" />
+              <SelectValue placeholder={t('address.form.countryPlaceholder', 'Country')} />
             </SelectTrigger>
             <SelectContent>
-              {supportedCountries.map((country) => {
-                const value = typeof country === 'string' ? country : country.value
-                const label =
-                  typeof country === 'string'
-                    ? country
-                    : typeof country.label === 'string'
-                      ? country.label
-                      : value
-
-                return (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                )
-              })}
+              {countryOptions.map((country) => (
+                <SelectItem key={country.value} value={country.value}>
+                  {country.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           {errors.country && <FormError message={errors.country.message} />}
         </FormItem>
       </div>
 
-      <Button type="submit">Submit</Button>
+      <Button type="submit">{t('address.form.submitLabel', 'Submit')}</Button>
     </form>
   )
 }

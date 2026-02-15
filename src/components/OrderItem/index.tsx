@@ -1,6 +1,9 @@
+'use client'
+
 import { OrderStatus } from '@/components/OrderStatus'
 import { Price } from '@/components/Price'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/i18n/useTranslation'
 import { Order } from '@/payload-types'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import Link from 'next/link'
@@ -10,7 +13,8 @@ type Props = {
 }
 
 export const OrderItem: React.FC<Props> = ({ order }) => {
-  const itemsLabel = order.items?.length === 1 ? 'Item' : 'Items'
+  const { t } = useTranslation()
+  const itemsLabel = order.items?.length === 1 ? t('orders.item') : t('orders.items')
 
   return (
     <div className="bg-card border rounded-lg px-4 py-2 md:px-6 md:py-4 flex flex-col sm:flex-row gap-12 sm:items-center sm:justify-between">
@@ -41,7 +45,7 @@ export const OrderItem: React.FC<Props> = ({ order }) => {
       </div>
 
       <Button variant="outline" asChild className="self-start sm:self-auto">
-        <Link href={`/orders/${order.id}`}>View Order</Link>
+        <Link href={`/orders/${order.id}`}>{t('orders.viewOrder')}</Link>
       </Button>
     </div>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Message } from '../Message'
 
@@ -17,14 +17,19 @@ export const RenderParamsComponent: React.FC<Props> = ({
   onParams,
   params = ['error', 'warning', 'success', 'message'],
 }) => {
+  const [isMounted, setIsMounted] = useState(false)
   const searchParams = useSearchParams()
   const paramValues = params.map((param) => searchParams?.get(param))
 
   useEffect(() => {
+    setIsMounted(true)
+
     if (paramValues.length && onParams) {
       onParams(paramValues)
     }
   }, [paramValues, onParams])
+
+  if (!isMounted) return null
 
   if (paramValues.length) {
     return (

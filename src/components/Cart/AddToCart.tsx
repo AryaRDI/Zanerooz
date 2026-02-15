@@ -3,6 +3,7 @@
 import { Button, type ButtonProps } from '@/components/ui/button'
 import type { Product, Variant } from '@/payload-types'
 
+import { useTranslation } from '@/i18n/useTranslation'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import clsx from 'clsx'
 import { useSearchParams } from 'next/navigation'
@@ -18,6 +19,7 @@ type Props = {
 export function AddToCart({ product, className, variant = 'outline', children }: Props) {
   const { addItem, cart, isLoading } = useCart()
   const searchParams = useSearchParams()
+  const { t } = useTranslation()
 
   const variants = product.variants?.docs || []
 
@@ -48,7 +50,7 @@ export function AddToCart({ product, className, variant = 'outline', children }:
         product: product.id,
         variant: selectedVariant?.id ?? undefined,
       }).then(() => {
-        toast.success('Item added to cart.')
+        toast.success(t('cart.itemAdded', 'Item added to cart.'))
       })
     },
     [addItem, product, selectedVariant],

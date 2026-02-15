@@ -53,7 +53,7 @@ export const ZarinpalVerifyContent: React.FC = () => {
       }
 
       const paymentData = JSON.parse(paymentDataStr)
-      const { amount, customerEmail } = paymentData
+      const { amount, customerEmail, shippingAddress } = paymentData
 
       // Prevent duplicate verification
       if (isVerifying.current) {
@@ -95,6 +95,7 @@ export const ZarinpalVerifyContent: React.FC = () => {
             refId: verifyData.refId,
             cardPan: verifyData.cardPan,
             customerEmail,
+            shippingAddress: shippingAddress || null,
           }),
         })
 
@@ -118,7 +119,7 @@ export const ZarinpalVerifyContent: React.FC = () => {
 
         // Redirect to order page after a short delay
         setTimeout(() => {
-          const redirectUrl = `/account/orders/${orderData.orderID}${customerEmail ? `?email=${customerEmail}` : ''}`
+          const redirectUrl = `/orders/${orderData.orderID}${customerEmail ? `?email=${customerEmail}` : ''}`
           router.push(redirectUrl)
         }, 2000)
 

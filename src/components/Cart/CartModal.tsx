@@ -181,6 +181,9 @@ export function CartModal() {
                     </div>
                   )}
 
+                  <Button asChild variant="outline" className="w-full mb-2">
+                    <Link href="/cart">{t('cart.viewCart', 'View Cart')}</Link>
+                  </Button>
                   <Button asChild>
                     <Link className="w-full" href="/checkout">
                       {t('cart.checkout')}
