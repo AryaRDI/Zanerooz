@@ -17,6 +17,28 @@ export const CartPage: React.FC = () => {
   const { cart } = useCart()
   const { t } = useTranslation()
 
+  const subtotalIRT = React.useMemo(() => {
+    if (!cart?.items?.length) return undefined
+    let total = 0
+    let hasIRT = false
+    for (const item of cart.items) {
+      const product = item.product
+      if (typeof product !== 'object' || !product) continue
+      const variant = item.variant
+      let irt: number | null | undefined
+      if (variant && typeof variant === 'object') {
+        irt = variant.priceInIRT
+      } else {
+        irt = product.priceInIRT
+      }
+      if (typeof irt === 'number') {
+        hasIRT = true
+        total += irt * (item.quantity || 1)
+      }
+    }
+    return hasIRT ? total : undefined
+  }, [cart?.items])
+
   const cartIsEmpty = !cart || !cart.items || !cart.items.length
 
   if (cartIsEmpty) {
@@ -163,7 +185,7 @@ export const CartPage: React.FC = () => {
             <div className="flex flex-col gap-3 text-sm">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">{t('cart.subtotal', 'Subtotal')}</span>
-                <Price amount={cart.subtotal || 0} />
+                <Price amount={cart.subtotal || 0} amountIRT={subtotalIRT} />
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">{t('cart.shipping', 'Shipping')}</span>
@@ -172,7 +194,7 @@ export const CartPage: React.FC = () => {
               <hr />
               <div className="flex justify-between items-center font-semibold text-base">
                 <span>{t('cart.total', 'Total')}</span>
-                <Price className="text-xl font-bold" amount={cart.subtotal || 0} />
+                <Price className="text-xl font-bold" amount={cart.subtotal || 0} amountIRT={subtotalIRT} />
               </div>
             </div>
 

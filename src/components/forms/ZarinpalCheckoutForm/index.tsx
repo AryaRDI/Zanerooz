@@ -13,6 +13,7 @@ type Props = {
   billingAddress?: Partial<Address>
   shippingAddress?: Partial<Address>
   cartTotal: number
+  cartTotalIRT?: number
   setProcessingPayment: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -21,6 +22,7 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
   billingAddress,
   shippingAddress,
   cartTotal,
+  cartTotalIRT,
   setProcessingPayment,
 }) => {
   const [error, setError] = useState<null | string>(null)
@@ -44,6 +46,7 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
           },
           body: JSON.stringify({
             amountInUSD: cartTotal,
+            amountInIRT: cartTotalIRT,
             description: `Order payment - ${cart?.items?.length || 0} items`,
             mobile: billingAddress?.phone,
             email: customerEmail,
@@ -77,7 +80,7 @@ export const ZarinpalCheckoutForm: React.FC<Props> = ({
         setProcessingPayment(false)
       }
     },
-    [cartTotal, billingAddress?.phone, customerEmail, cart?.id, cart?.items?.length, setProcessingPayment, shippingAddress, billingAddress],
+    [cartTotal, cartTotalIRT, billingAddress?.phone, customerEmail, cart?.id, cart?.items?.length, setProcessingPayment, shippingAddress, billingAddress],
   )
 
   return (

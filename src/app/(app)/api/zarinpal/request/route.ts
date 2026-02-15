@@ -42,12 +42,12 @@ function formatIranianMobile(phone: string): string | undefined {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { amountInUSD, description, mobile, email, orderId } = body
+    const { amountInUSD, amountInIRT, description, mobile, email, orderId } = body
 
     // Validate required fields
-    if (!amountInUSD || !description) {
+    if ((!amountInUSD && !amountInIRT) || !description) {
       return NextResponse.json(
-        { error: 'Missing required fields: amountInUSD, description' },
+        { error: 'Missing required fields: amountInUSD or amountInIRT, description' },
         { status: 400 }
       )
     }
@@ -60,8 +60,11 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Convert USD to Rials
-    const amountInRials = convertToRials(amountInUSD)
+    // Convert to Rials: prefer IRT (Toman) if available, otherwise convert from USD
+    // 1 Toman = 10 Rials
+    const amountInRials = amountInIRT
+      ? Math.round(amountInIRT * 10)
+      : convertToRials(amountInUSD)
 
     // Minimum payment amount is 10,000 Rials
     if (amountInRials < 10000) {

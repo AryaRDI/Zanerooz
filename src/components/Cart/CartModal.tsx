@@ -40,6 +40,28 @@ export function CartModal() {
     return cart.items.reduce((quantity, item) => (item.quantity || 0) + quantity, 0)
   }, [cart])
 
+  const subtotalIRT = useMemo(() => {
+    if (!cart?.items?.length) return undefined
+    let total = 0
+    let hasIRT = false
+    for (const item of cart.items) {
+      const product = item.product
+      if (typeof product !== 'object' || !product) continue
+      const variant = item.variant
+      let irt: number | null | undefined
+      if (variant && typeof variant === 'object') {
+        irt = variant.priceInIRT
+      } else {
+        irt = product.priceInIRT
+      }
+      if (typeof irt === 'number') {
+        hasIRT = true
+        total += irt * (item.quantity || 1)
+      }
+    }
+    return hasIRT ? total : undefined
+  }, [cart?.items])
+
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
       <SheetTrigger asChild>
@@ -176,6 +198,7 @@ export function CartModal() {
                       <p>{t('cart.total')}</p>
                       <Price
                         amount={cart?.subtotal}
+                        amountIRT={subtotalIRT}
                         className="text-right text-base text-black dark:text-white"
                       />
                     </div>
