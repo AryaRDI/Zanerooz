@@ -978,6 +978,7 @@ export interface Address {
   state?: string | null;
   postalCode?: string | null;
   country:
+    | 'IR'
     | 'US'
     | 'GB'
     | 'CA'
@@ -1017,7 +1018,9 @@ export interface Address {
     | 'SI'
     | 'ES'
     | 'SE'
-    | 'CH';
+    | 'CH'
+    | 'TR'
+    | 'AE';
   phone?: string | null;
   updatedAt: string;
   createdAt: string;
