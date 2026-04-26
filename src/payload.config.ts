@@ -63,13 +63,14 @@ export default buildConfig({
   db: vercelPostgresAdapter({
     pool: {
       connectionString: (() => {
-        const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+        const connectionString =
+          process.env.PAYLOAD_DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
 
         if (!connectionString) {
           throw new Error(
             [
               'Missing Postgres connection string.',
-              'Set `POSTGRES_URL` (or `DATABASE_URL`) to a Postgres connection string.',
+              'Set `PAYLOAD_DATABASE_URL`, `POSTGRES_URL`, or `DATABASE_URL` to a Postgres connection string.',
               'If you are using Supabase locally, this must be the DB port (typically 54322), not the Supabase API port (54321).',
             ].join(' '),
           )
