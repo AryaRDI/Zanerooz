@@ -19,6 +19,8 @@ async function handleCallback(
 ): Promise<NextResponse> {
   const invoiceKey = request.nextUrl.searchParams.get('invoice_key')
 
+  // PHP isset() parity: an empty string is "present" — only a genuinely
+  // absent query param counts as missing.
   if (invoiceKey === null) {
     console.warn('[callback] request missing invoice_key query param')
     return new NextResponse('', { status: 200 })

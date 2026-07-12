@@ -13,6 +13,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const bankUrl = formData.get('BANK_URL')
 
+  // PHP isset() parity: an empty string is "present" — only a genuinely
+  // absent field (or a non-string File value) counts as missing.
   if (typeof bankUrl !== 'string') {
     console.warn('[tobank] request missing BANK_URL field')
     return new NextResponse('', { status: 200 })
