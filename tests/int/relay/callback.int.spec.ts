@@ -86,4 +86,22 @@ describe('POST /callback', () => {
     expect(response.status).toBe(200)
     expect(await response.text()).toBe('')
   })
+
+  it('returns an empty 200 when request body is malformed multipart/form-data', async () => {
+    // Construct a request with multipart/form-data Content-Type but a body that does not
+    // match the declared boundary, causing formData() to throw during parsing.
+    const malformedBody = 'This is not a valid multipart body with boundary markers'
+    const req = new NextRequest('http://localhost:3000/callback?invoice_key=abc123', {
+      method: 'POST',
+      body: malformedBody,
+      headers: {
+        'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary1234567890',
+      },
+    })
+
+    const response = await POST(req)
+
+    expect(response.status).toBe(200)
+    expect(await response.text()).toBe('')
+  })
 })

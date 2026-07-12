@@ -61,7 +61,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     formData = await request.formData()
   } catch (error) {
     console.error('[callback] failed to parse request body:', error)
-    formData = new FormData()
+    return new NextResponse('', { status: 200 })
   }
 
   return handleCallback(request, formData)
