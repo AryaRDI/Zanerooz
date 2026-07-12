@@ -36,6 +36,17 @@ describe('GET /callback', () => {
     expect(response.status).toBe(200)
     expect(await response.text()).toBe('')
   })
+
+  it('treats empty string invoice_key as present, matching PHP isset() semantics', async () => {
+    const request = new NextRequest('http://localhost:3000/callback?invoice_key=')
+
+    const response = await GET(request)
+
+    expect(response.status).toBe(302)
+    expect(response.headers.get('location')).toBe(
+      'https://mahanbash.ir/invoice/processTransaction//',
+    )
+  })
 })
 
 describe('POST /callback', () => {

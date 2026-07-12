@@ -75,4 +75,20 @@ describe('POST /tobank', () => {
     expect(response.status).toBe(200)
     expect(await response.text()).toBe('')
   })
+
+  it('treats empty string BANK_URL as present, matching PHP isset() semantics', async () => {
+    const response = await POST(
+      postRequest({
+        BANK_URL: '',
+        Amount: '50000',
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
+
+    const html = await response.text()
+    expect(html).toContain('<form action="" method="post">')
+    expect(html).toContain('<input type="hidden" name="Amount" value="50000"/>')
+  })
 })

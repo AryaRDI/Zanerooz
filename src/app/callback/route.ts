@@ -19,7 +19,7 @@ async function handleCallback(
 ): Promise<NextResponse> {
   const invoiceKey = request.nextUrl.searchParams.get('invoice_key')
 
-  if (!invoiceKey) {
+  if (invoiceKey === null) {
     console.warn('[callback] request missing invoice_key query param')
     return new NextResponse('', { status: 200 })
   }

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const bankUrl = formData.get('BANK_URL')
 
-  if (typeof bankUrl !== 'string' || bankUrl.length === 0) {
+  if (typeof bankUrl !== 'string') {
     console.warn('[tobank] request missing BANK_URL field')
     return new NextResponse('', { status: 200 })
   }
